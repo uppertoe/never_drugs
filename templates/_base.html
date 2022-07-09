@@ -23,8 +23,12 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a class="nav-link" href="{% url 'book_list' %}">Books</a>
+                    <a class="nav-link" href="{% url 'drug_list' %}">Drugs</a>
+                    <a class="nav-link" href="{% url 'condition_list' %}">Conditions</a>
+                    <a class="nav-link" href="{% url 'interaction_list' %}">Interactions</a>
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                     {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
                     <a class="nav-link" href="{% url 'account_logout' %}">Log Out</a>
                     {% else %}
                     <a class="nav-link" href="{% url 'account_login' %}">Log In</a>

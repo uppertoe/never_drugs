@@ -1,0 +1,10 @@
+{% extends '_base.html' %}
+{% block title %}{{ drug.name }}{% endblock title %}
+
+{% block content %}
+<div class="drug-detail">
+    <h2><a href="">{{ drug.name }}</a></h2>
+    <p>Also known as: {{ drug.aliases }}</p>
+    <p>Drug class: {{ drug.drug_class }}</p>
+</div>
+{% endblock content %}

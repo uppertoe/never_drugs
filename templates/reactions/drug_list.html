@@ -1,0 +1,11 @@
+{% extends '_base.html' %}
+
+{% block title %}Drugs{% endblock title %}
+
+{% block content %}
+{% for drug in drug_list %}
+<div>
+    <h2><a href="{{ drug.get_absolute_url }}">{{ drug.name }}</a></h2>
+</div>
+{% endfor %}
+{% endblock content %}

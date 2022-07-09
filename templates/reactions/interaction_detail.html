@@ -1,0 +1,10 @@
+{% extends '_base.html' %}
+{% block title %}{{ interaction.drugs }} - {{ interaction.condition }}{% endblock title %}
+
+{% block content %}
+<div class="interaction-detail">
+    <h2><a href="">{{ interaction.condition }}</a></h2>
+    <p>Drugs involved: {{ interaction.drugs }}</p>
+    <p>Reaction type: {{ interaction.reaction_type }}</p>
+</div>
+{% endblock content %}
