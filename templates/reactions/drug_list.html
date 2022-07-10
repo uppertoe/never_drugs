@@ -3,9 +3,26 @@
 {% block title %}Drugs{% endblock title %}
 
 {% block content %}
-{% for drug in drug_list %}
-<div>
-    <h2><a href="{{ drug.get_absolute_url }}">{{ drug.name }}</a></h2>
+<div class="accordion accordion-flush" id="accordionFlushExample">
+
+    {% for drug in drug_list %}
+
+
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-heading{{drug}}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#flush-collapse{{drug}}" aria-expanded="false" aria-controls="flush-collapse{{drug}}">
+                {{drug.name}}
+            </button>
+        </h2>
+        <div id="flush-collapse{{drug}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{drug}}"
+            data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">{{drug.aliases}}</div>
+        </div>
+    </div>
+
+    {% endfor %}
+
 </div>
-{% endfor %}
 {% endblock content %}

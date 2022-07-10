@@ -4,7 +4,10 @@
 {% block content %}
 <div class="interaction-detail">
     <h2><a href="">{{ interaction.condition }}</a></h2>
-    <p>Drugs involved: {{ interaction.drugs }}</p>
+    <p>Drugs involved:</p>
+    {% for drug in interaction.get_drug_names %}
+    <p>{{ drug }}</p>
+    {% endfor %}
     <p>Reaction type: {{ interaction.reaction_type }}</p>
 </div>
 {% endblock content %}

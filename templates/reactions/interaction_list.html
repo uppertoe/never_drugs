@@ -5,7 +5,8 @@
 {% block content %}
 {% for interaction in interaction_list %}
 <div>
-    <h2><a href="{{ interaction.get_absolute_url }}">{{ interaction.reaction_type }} from {{ interaction.drugs }}</a>
+    <h2><a href="{{ interaction.get_absolute_url }}">{{ interaction.reaction_type }} from
+            {{ interaction.get_drug_names }}</a>
     </h2>
 </div>
 {% endfor %}
