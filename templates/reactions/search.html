@@ -1,16 +1,8 @@
 {% extends '_base.html' %}
-{% load static %}
 
-{% block title %}Home{% endblock title %}
+{% block title %}Search{% endblock title %}
 
 {% block content %}
-
-<div class="px-4 py-5 my-5 text-center">
-    <h1 class="display-5 fw-bold">Welcome to neverDrugs.io</h1>
-    <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4">Rapidly identify anaesthetic drugs that are contraindicated in rare conditions.</p>
-    </div>
-</div>
 <div class="container bg-light p-5 rounded-lg m-3">
     <div class="row justify-content-md-center">
         <form action="{% url 'search_results' %}" method='get' class='d-flex'>
@@ -23,10 +15,4 @@
         </form>
     </div>
 </div>
-{% if user.is_authenticated %}
-<p>Hi {{ user.email }}</p>
-<p><a href="{% url 'account_logout' %}">Log out</a></p>
-{% else %}
-<p>You are not logged in</p>
-{% endif %}
 {% endblock content %}

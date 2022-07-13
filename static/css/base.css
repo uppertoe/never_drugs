@@ -2,10 +2,6 @@ body {
     min-height: 75rem;
 }
 
-h1 {
-    color: red;
-}
-
 .bookcover {
     height: 300px;
     width: auto;

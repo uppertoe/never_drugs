@@ -1,0 +1,17 @@
+{% extends '_base.html' %}
+
+{% block title %}Search{% endblock title %}
+
+{% block content %}
+<h1>Search Results</h1>
+{% for interaction in interaction_list %}
+<h3><a href="{{ interaction.get_absolute_url }}">{{ interaction.condition.name }}</a></h3>
+<h4>Reaction: {{ interaction.reaction_type }}</h4>
+<p>Associated drugs:
+    {% for drug in interaction.drugs.all %}
+    <p>{{ drug.name }}</p>
+    {% endfor %}
+</p>
+{% endfor %}
+
+{% endblock content %}
