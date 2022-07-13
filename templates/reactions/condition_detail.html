@@ -2,8 +2,11 @@
 {% block title %}{{ condition.name }}{% endblock title %}
 
 {% block content %}
+<h1>Condition information</h1>
 <div class="condition-detail">
     <h2><a href="">{{ condition.name }}</a></h2>
+    {% if condition.aliases %}
     <p>Also known as: {{ condition.aliases }}</p>
+    {% endif %}
 </div>
 {% endblock content %}
