@@ -13,8 +13,8 @@ class ConditionAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 class InteractionAdmin(admin.ModelAdmin):
-    list_display = ('condition', 'reaction_type', 'description', 'severity', 'evidence')
-    filter_horizontal = ('drugs',)
+    list_display = ('name', 'description', 'severity', 'evidence')
+    filter_horizontal = ('conditions', 'drugs')
 
 admin.site.register(DrugClass)
 admin.site.register(Drug, DrugAdmin)

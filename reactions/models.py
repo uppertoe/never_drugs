@@ -75,9 +75,9 @@ class Interaction(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    condition = models.ForeignKey(Condition,on_delete=models.CASCADE)
+    name = LowercaseField(max_length=255)
+    conditions = models.ManyToManyField(Condition)
     drugs = models.ManyToManyField(Drug)
-    reaction_type = LowercaseField(max_length=255)
     description = models.TextField()
     severity = models.CharField(
         max_length=2,
@@ -92,8 +92,9 @@ class Interaction(models.Model):
         return [drug.name for drug in self.drugs.all()]
     
     def __str__(self):
-        drugs_string = ' ,'.join(self.get_drug_names())
-        return f'{self.condition} and {drugs_string} interaction'
+        drugs_string = ', '.join([drug.name for drug in self.drugs.all()])
+        conditions_string = ', '.join([condition.name for condition in self.conditions.all()])
+        return f'{conditions_string} and {drugs_string} interaction'
 
     def get_absolute_url(self):
         return reverse('interaction_detail', kwargs={'str': self.condition.slug, 'pk': str(self.id)})
