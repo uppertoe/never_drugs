@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.urls import reverse
+from django.contrib import admin
 
 
 # Create your models here.
@@ -21,8 +22,12 @@ class DrugClass(models.Model):
 class Drug(models.Model):
     name = LowercaseField(max_length=255, unique=True)
     aliases = LowercaseField(max_length=1023, blank=True)
+    slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
     drug_class = models.ManyToManyField(DrugClass, blank=True)
-    slug = models.SlugField(null=False, unique=True)
+
+    @admin.display(description='Classes')
+    def get_drug_classes(self):
+        return [drug_class for drug_class in self.drug_class.all()]
 
     def get_absolute_url(self):
         return reverse('drug_detail', kwargs={'slug': self.slug})
@@ -33,8 +38,8 @@ class Drug(models.Model):
 class Condition(models.Model):
     name = LowercaseField(max_length=255, unique=True)
     aliases = LowercaseField(max_length=1023, blank=True)
+    slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
     description = models.TextField(max_length=1023, blank=True)
-    slug = models.SlugField(null=False, unique=True)
 
     def get_absolute_url(self):
         return reverse('condition_detail', kwargs={'slug': self.slug})
@@ -90,14 +95,18 @@ class Interaction(models.Model):
         choices=evidence_choices,
         default=L7)
     
-    def get_drug_names(self):
-        drugs_string = ', '.join([drug.name for drug in self.drugs.all()])
-        conditions_string = ', '.join([condition.name for condition in self.conditions.all()])
-        return f'{conditions_string} and {drugs_string} interaction'
+    @admin.display(description='Drugs')
+    def get_drug_list(self):
+        return [drug for drug in self.drugs.all()]
+
+    @admin.display(description='Conditions')
+    def get_condition_list(self):
+        return [condition for condition in self.conditions.all()]
 
     def __str__(self):
         drugs_string = ', '.join([drug.name for drug in self.drugs.all()])
-        return f'{self.name} with {drugs_string}'
+        conditions_string = ', '.join([condition.name for condition in self.conditions.all()])
+        return f'{self.name}: {conditions_string} with {drugs_string}'
 
     def get_absolute_url(self):
         return reverse('interaction_detail', kwargs={'str': self.condition.slug, 'pk': str(self.id)})

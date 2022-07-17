@@ -3,7 +3,7 @@ version: "3.9"
 services:
   web:
     build: .
-    command: gunicorn core.wsgi -b 0.0.0.0:8000
+    command: gunicorn core.wsgi --workers 2 -b 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
@@ -20,10 +20,11 @@ services:
     - "DJANGO_SESSION_COOKIE_SECURE=False"
     - "DJANGO_CSRF_COOKIE_SECURE=False"
     - "DJANGO_TIME_ZONE=Australia/Melbourne"
-    - "EMAIL_HOST="
-    - "EMAIL_HOST_USER="
-    - "EMAIL_HOST_PASSWORD="
-    - "EMAIL_PORT="
+    - "DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend"
+    - "EMAIL_HOST=smtp.mailgun.org"
+    - "EMAIL_HOST_USER=postmaster@sandbox6bfad6923b3446bd82c6a414cbd8122a.mailgun.org"
+    - "EMAIL_HOST_PASSWORD=f65bad0b511e5514ea786d855a387fd9-18e06deb-214ab1b0"
+    - "EMAIL_PORT=587"
     - "EMAIL_USE_TLS="
   db:
     image: postgres:13
