@@ -106,6 +106,10 @@ class Interaction(models.Model):
     def __str__(self):
         drugs_string = ', '.join([drug.name for drug in self.drugs.all()])
         conditions_string = ', '.join([condition.name for condition in self.conditions.all()])
+        # Insert '...' for long names
+        string_length = 30
+        if len(drugs_string) > string_length: drugs_string = drugs_string[:string_length] + '...'
+        if len(conditions_string) > string_length: conditions_string = conditions_string[:string_length] + '...'
         return f'{self.name}: {conditions_string} with {drugs_string}'
 
     def get_absolute_url(self):
