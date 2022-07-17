@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'debug_toolbar',
+    'mjml',
     # Local
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig',
@@ -119,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Australia/Melbourne'
+TIME_ZONE = env('DJANGO_TIME_ZONE', default='Australia/Melbourne')
 
 USE_I18N = True
 
@@ -170,3 +171,9 @@ ACCOUNT_UNIQUE_EMAIL = True
 import socket
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + '1' for ip in ips]
+
+# MJML configuration
+MJML_BACKEND_MODE = 'tcpserver'
+MJML_TCPSERVERS = [
+    ('mjml', 28102),  # host (from Dockerfile) and port
+]
