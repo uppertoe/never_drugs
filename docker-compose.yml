@@ -20,11 +20,11 @@ services:
     - "DJANGO_SESSION_COOKIE_SECURE=False"
     - "DJANGO_CSRF_COOKIE_SECURE=False"
     - "DJANGO_TIME_ZONE=Australia/Melbourne"
-    - "DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend"
-    - "EMAIL_HOST=smtp.mailgun.org"
-    - "EMAIL_HOST_USER=postmaster@sandbox6bfad6923b3446bd82c6a414cbd8122a.mailgun.org"
-    - "EMAIL_HOST_PASSWORD=f65bad0b511e5514ea786d855a387fd9-18e06deb-214ab1b0"
-    - "EMAIL_PORT=587"
+    - "DJANGO_EMAIL_BACKEND="
+    - "EMAIL_HOST="
+    - "EMAIL_HOST_USER="
+    - "EMAIL_HOST_PASSWORD="
+    - "EMAIL_PORT="
     - "EMAIL_USE_TLS="
   db:
     image: postgres:13

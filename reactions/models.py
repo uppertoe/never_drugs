@@ -5,7 +5,7 @@ from django.contrib import admin
 
 
 # Create your models here.
-class LowercaseField(models.CharField):
+class LowercaseField(models.CharField): #store fields in lowercase
     def __init__(self, *args, **kwargs):
         super(LowercaseField, self).__init__(*args, **kwargs)
 
