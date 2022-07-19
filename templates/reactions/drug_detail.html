@@ -5,6 +5,14 @@
 <div class="drug-detail">
     <h2><a href="">{{ drug.name }}</a></h2>
     <p>Also known as: {{ drug.aliases }}</p>
-    <p>Drug class: {{ drug.drug_class }}</p>
+    <p>Drug class: {{ drug.get_drug_class_string }}</p>
+</div>
+<div>
+    {% if interactions %}
+    <h2>Interactions:</h2>
+    {% for interaction in interactions %}
+    <p>{{interaction.name}}</p>
+    {% endfor %}
+    {% endif %}
 </div>
 {% endblock content %}

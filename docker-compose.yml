@@ -20,7 +20,7 @@ services:
     - "DJANGO_SESSION_COOKIE_SECURE=False"
     - "DJANGO_CSRF_COOKIE_SECURE=False"
     - "DJANGO_TIME_ZONE=Australia/Melbourne"
-    - "DJANGO_EMAIL_BACKEND="
+    #- "DJANGO_EMAIL_BACKEND="
     - "EMAIL_HOST="
     - "EMAIL_HOST_USER="
     - "EMAIL_HOST_PASSWORD="

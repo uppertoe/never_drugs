@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views import (DrugDetailView, DrugListView, ConditionDetailView, 
-ConditionListView, InteractionDetailView, InteractionListView, InteractionSearchResultsListView, SearchView)
+ConditionListView, InteractionDetailView, InteractionListView,
+InteractionSearchResultsListView, SearchView, SearchResultsView)
 
 urlpatterns = [
     path('drug/', DrugListView.as_view(), name='drug_list'),
@@ -12,4 +13,5 @@ urlpatterns = [
     path('interaction/<str:str>/<uuid:pk>', InteractionDetailView.as_view(), name='interaction_detail'),
     path('search/', SearchView.as_view(), name='search'),
     path('search/interaction/', InteractionSearchResultsListView.as_view(), name='search_results'),
+    path('search/test/', SearchResultsView, name='search_results_test'),
 ]
