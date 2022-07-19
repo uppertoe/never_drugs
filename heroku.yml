@@ -4,7 +4,6 @@ setup:
 build:
   docker:
     web: Dockerfile
-    mjml: mjml/Dockerfile
 release:
   image: web
   command:
