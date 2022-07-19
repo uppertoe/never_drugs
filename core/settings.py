@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'debug_toolbar',
-    'mjml',
+    #'mjml',
     # Local
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig',
