@@ -175,5 +175,5 @@ INTERNAL_IPS = [ip[:-1] + '1' for ip in ips]
 # MJML configuration
 MJML_BACKEND_MODE = 'tcpserver'
 MJML_TCPSERVERS = [
-    ('mjml', 28102),  # host (from Dockerfile) and port
+    ('mjml', env('PORT', default=28102)),  # host (from Dockerfile) and port
 ]
