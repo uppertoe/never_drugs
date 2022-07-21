@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, TemplateView
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
 
 from .models import Drug, Condition, Interaction
 
@@ -28,7 +28,7 @@ class DrugDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['interactions'] = self.object.interactions.all()
+        context['interactions'] = self.object.interactions.all().prefetch_related('conditions',)
         return context
 
 class ConditionDetailView(DetailView):

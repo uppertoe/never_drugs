@@ -1,18 +1,37 @@
 {% extends '_base.html' %}
+{% load static %}
 {% block title %}{{ drug.name }}{% endblock title %}
 
 {% block content %}
-<div class="drug-detail">
-    <h2><a href="">{{ drug.name }}</a></h2>
-    <p>Also known as: {{ drug.aliases }}</p>
-    <p>Drug class: {{ drug.get_drug_class_string }}</p>
-</div>
-<div>
-    {% if interactions %}
-    <h2>Interactions:</h2>
-    {% for interaction in interactions %}
-    <p>{{interaction.name}}</p>
-    {% endfor %}
-    {% endif %}
+<div class="container col-xl-10 col-xxl-8 px-4 py-5">
+    <div class="row align-items-center g-lg-5 py-5">
+        <div class="col-lg-7 text-center text-lg-start">
+            <h1 class="display-4 fw-bold lh-1 mb-3">{{ drug.name | capfirst }}</h1>
+            {% if drug.aliases %}
+            <small class="text-muted">Also known as: {{ drug.aliases }}</small>
+            {% endif %}
+            <p class="col-lg-10 fs-4">Drug class: {{ drug.get_drug_class_string }}</p>
+        </div>
+        <div class="col-md-10 mx-auto col-lg-5">
+            <div class="list-group w-auto">
+                {% if interactions %}
+                {% for interaction in interactions %}
+                <a href="{{interaction.get_absolute_url}}"
+                    class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                    <img src="{% static 'images/clipboard2-pulse-fill.svg'%}" alt="clipboard" width="32" height="32"
+                        class=" flex-shrink-0">
+                    <div class="d-flex gap-2 w-100 justify-content-between">
+                        <div>
+                            <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
+                            <p class="mb-0 opacity-75">{{interaction.get_condition_string | capfirst}}</p>
+                        </div>
+                        <small class="opacity-50 text-nowrap">now</small>
+                    </div>
+                </a>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}

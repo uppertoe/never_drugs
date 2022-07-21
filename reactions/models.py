@@ -115,6 +115,9 @@ class Interaction(models.Model):
     ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?')
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+
+    def get_condition_string(self):
+        return ', '.join([condition.name for condition in self.conditions.all()])
     
     @admin.display(description='Drugs')
     def get_drug_list(self): # Allow many-many relationship query
