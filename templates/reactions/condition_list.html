@@ -1,11 +1,26 @@
-{% extends '_base.html' %}
+{% extends 'reactions/_item_list.html' %}
+{% load static %}
 
 {% block title %}Conditions{% endblock title %}
 
-{% block content %}
+{% block heading %}Conditions{% endblock heading %}
+{% block description %}A list of all conditions in the database{% endblock description %}
+
+{% block item_loop %}
+{% if condition_list %}
 {% for condition in condition_list %}
-<div>
-    <h2><a href="{{ condition.get_absolute_url }}">{{ condition.name }}</a></h2>
-</div>
+<a href="{{condition.get_absolute_url}}" class="list-group-item list-group-item-action d-flex gap-3 py-3"
+    aria-current="true">
+    <img src="{% static 'images/clipboard2-pulse-fill.svg'%}" alt="clipboard" width="32" height="32"
+        class=" flex-shrink-0">
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+            <h6 class="mb-0">{{condition.name | capfirst}}</h6>
+            <small class="opacity-50 text-nowrap">{{condition.date_modified}}</small>
+        </div>
+
+    </div>
+</a>
 {% endfor %}
-{% endblock content %}
+{% endif %}
+{% endblock item_loop %}

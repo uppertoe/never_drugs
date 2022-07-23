@@ -1,12 +1,36 @@
-{% extends '_base.html' %}
-{% block title %}{{ condition.name }}{% endblock title %}
+{% extends 'reactions/_item_list.html' %}
+{% load static %}
 
-{% block content %}
-<h1>Condition information</h1>
-<div class="condition-detail">
-    <h2><a href="">{{ condition.name }}</a></h2>
-    {% if condition.aliases %}
-    <p>Also known as: {{ condition.aliases }}</p>
-    {% endif %}
-</div>
-{% endblock content %}
+{% block title %}{{ condition.name | capfirst }}{% endblock title %}
+
+{% block heading %}{{ condition.name | capfirst }}{% endblock heading %}
+
+{% block subheading %}
+{% if condition.aliases %}
+<small class="text-muted">Also known as: {{ condition.aliases }}</small>
+{% endif %}
+{% if condition.description %}
+<p class="col-lg-10 fs-4">Description: {{ condition.description }}</p>
+{% endif %}
+{% endblock subheading %}
+
+{% block item_loop %}
+{% if interactions %}
+{% for interaction in interactions %}
+<a href="{{interaction.get_absolute_url}}" class="list-group-item list-group-item-action d-flex gap-3 py-3"
+    aria-current="true">
+    <img src="{% static 'images/prescription.svg' %}" alt="clipboard" width="32" height="32" class=" flex-shrink-0">
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+            <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
+            {% for drug in interaction.drugs.all %}
+            <p class="mb-0 opacity-75">{{drug.name | capfirst}}</p>
+            {% endfor %}
+            <small class="opacity-50 text-nowrap">{{condition.date_modified}}</small>
+        </div>
+
+    </div>
+</a>
+{% endfor %}
+{% endif %}
+{% endblock item_loop %}

@@ -38,3 +38,8 @@ if settings.DEBUG:
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
+
+# Admin site customisation
+admin.site.site_header  =  "neverDrugs.io"  
+admin.site.site_title  =  "neverDrugs.io administration"
+admin.site.index_title  =  "neverDrugs.io Admin"

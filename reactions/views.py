@@ -36,6 +36,11 @@ class ConditionDetailView(DetailView):
     context_object_name = 'condition'
     template_name = 'reactions/condition_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['interactions'] = self.object.interactions.all().prefetch_related('drugs',)
+        return context
+
 class InteractionDetailView(DetailView):
     model = Interaction
     context_object_name = 'interaction'

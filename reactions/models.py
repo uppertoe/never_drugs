@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from django.db import models
 from django.urls import reverse
 from django.contrib import admin
@@ -35,6 +36,9 @@ class Drug(models.Model):
     slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
     drug_class = models.ManyToManyField(DrugClass, blank=True, related_name='drugs')
 
+    class Meta:
+        ordering = ['name']
+
     @admin.display(description='Classes')
     def get_drug_classes(self):
         return [drug_class for drug_class in self.drug_class.all()]
@@ -56,6 +60,9 @@ class Condition(models.Model):
     ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?')
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
 
     def get_absolute_url(self):
         return reverse('condition_detail', kwargs={'slug': self.slug})
@@ -138,3 +145,6 @@ class Interaction(models.Model):
 
     def get_absolute_url(self):
         return reverse('interaction_detail', kwargs={'str': slugify(self.name), 'pk': str(self.id)})
+
+    def last_modified_string(self):
+        return str(datetime.now() - self.date_modified.date)
