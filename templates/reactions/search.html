@@ -1,18 +1,41 @@
-{% extends '_base.html' %}
+{% extends 'reactions/_item_list.html' %}
+{% load static %}
 
 {% block title %}Search{% endblock title %}
 
-{% block content %}
-<div class="container bg-light p-5 rounded-lg m-3">
-    <div class="row justify-content-md-center">
-        <form action="{% url 'search_results' %}" method='get' class='d-flex'>
-            <div class="mb-3 input-group">
-                <input type="search" class="form-control" name='q' placeholder="Condition">
-                <div class="input-group-append"><button class="btn btn-outline-success" type='submit'>Search</button>
-                </div>
-
-            </div>
-        </form>
+{% block heading %}Search{% endblock heading %}
+{% block description %}Look up conditions and anaesthetic drugs{% endblock description %}
+{% block item_loop %}
+<form action="{% url 'search' %}" method='get' class='d-flex'>
+    <div class="mb-3 input-group">
+        <input type="search" class="form-control" name='q'
+            placeholder="{% if request.GET.q %}{{ request.GET.q }}{% else %}Drug or condition{% endif %}">
+        <div class="input-group-append"><button class="btn btn-outline-success" type='submit'>Search</button>
+        </div>
     </div>
-</div>
-{% endblock content %}
+</form>
+{% if results %}
+{% for result in results %}
+<a href="{{ result.get_absolute_url }}" class="list-group-item list-group-item-action d-flex gap-3 py-3"
+    aria-current="true">
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+            <h6 class="mb-0">{{ result.name | capfirst }}</h6>
+            {% if result.aliases %}
+            <p class="mb-0 opacity-75">Also known as: {{result.aliases}}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% if result.interactions.count > 0 %}
+    <button type="button" class="btn btn-secondary position-relative">
+        Interactions
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ result.interactions.count }}
+            <span class="visually-hidden">interaction count</span>
+        </span>
+    </button>
+    {% endif %}
+</a>
+{% endfor %}
+{% endif %}
+{% endblock item_loop %}

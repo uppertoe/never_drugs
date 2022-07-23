@@ -123,6 +123,15 @@ class Interaction(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
+    def get_bootstrap_alert_colour(self): # chooses bootstrap alert colour based on interaction.severity
+        severity_alert_dict = { 
+            'NA': 'alert-secondary',
+            'MI': 'alert-primary',
+            'MO': 'alert-warning',
+            'SE': 'alert-danger',
+        }
+        return severity_alert_dict.get(self.severity)
+
     def get_condition_string(self):
         return ', '.join([condition.name for condition in self.conditions.all()])
     

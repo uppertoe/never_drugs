@@ -1,13 +1,43 @@
 {% extends '_base.html' %}
-{% block title %}{{ interaction.drugs }} - {{ interaction.condition }}{% endblock title %}
+{% load static %}
 
 {% block content %}
-<div class="interaction-detail">
-    <h2><a href="">{{ interaction.condition }}</a></h2>
-    <p>Drugs involved:</p>
-    {% for drug in interaction.get_drug_names %}
-    <p>{{ drug }}</p>
-    {% endfor %}
-    <p>Reaction type: {{ interaction.reaction_type }}</p>
+<div class="container col-xxl-8 px-4 py-5">
+    <div class="row align-items-top g-5 py-5">
+        <div class="col-lg-4">
+            <h1 class="display-5 fw-bold lh-1 mb-3 text-break">{{ interaction.name | capfirst }}</h1>
+            <small class="text-muted">Last modified: {{ interaction.date_modified }}</small>
+            <hr class="my-4">
+            <div class="alert {{ interaction.get_bootstrap_alert_colour }}" role="alert">
+                {% for drug in interaction.drugs.all %}
+                <p class="mb-0">{{drug.name | capfirst}}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-8 mx-auto">
+            <div class="p-4 p-md-5 border rounded-3 bg-light">
+                <div class="mb-3">
+                    <h4>Susceptible conditions: </h4>
+                    <p>{{ interaction.get_condition_string | capfirst }}</p>
+                </div>
+                <div class="mb-3">
+                    <h4>Description:</h4>
+                    <p>{{ interaction.description }}</p>
+                </div>
+                {% if interaction.sources.all.count > 0%}
+                <hr class="my-4">
+                <h6 class="text-muted">References</h6>
+                {% for source in interaction.sources.all %}
+                <div class="mb-1">
+                    <small class="text-muted">{{ source }}</small>
+                    {% if source.url %}
+                    <small class="text-muted"><a href="{{source.url}}">{{source.url}}</a></small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}

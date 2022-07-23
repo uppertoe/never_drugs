@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView, TemplateView
 from django.db.models import Q
 from django.shortcuts import render
+from itertools import chain
 
 from .models import Drug, Condition, Interaction
 
@@ -58,15 +59,13 @@ class InteractionSearchResultsListView(ListView):
             .filter(Q(conditions__name__icontains=query))
             .prefetch_related('drugs', 'conditions'))
 
-class SearchView(TemplateView):
-    template_name = 'reactions/search.html'
-
-def SearchResultsView(request):
+def SearchView(request):
     query = request.GET.get('q')
-    drugs = Drug.objects.filter(Q(name__icontains=query) | Q(aliases__icontains=query)).prefetch_related('interactions')
-    conditions = Condition.objects.filter(Q(name__icontains=query) | Q(aliases__icontains=query)).prefetch_related('interactions')
-    context = {
-        'drugs': drugs,
-        'conditions': conditions,
-        'query': query}
-    return render(request, 'reactions/search_results.html', context)
+    if query:
+        drugs = Drug.objects.filter(Q(name__icontains=query) | Q(aliases__icontains=query)).prefetch_related('interactions')
+        conditions = Condition.objects.filter(Q(name__icontains=query) | Q(aliases__icontains=query)).prefetch_related('interactions')
+        context = {
+            'results': chain(drugs,conditions), #combine querysets from both models
+            'query': query,}
+        return render(request, 'reactions/search.html', context)
+    return render(request, 'reactions/search.html') # template {% if %} to catch empty context
