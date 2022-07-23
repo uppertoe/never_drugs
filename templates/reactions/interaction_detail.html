@@ -22,7 +22,7 @@
                 </div>
                 <div class="mb-3">
                     <h4>Description:</h4>
-                    <p>{{ interaction.description }}</p>
+                    <p>{{ interaction.description | linebreaks }}</p>
                 </div>
                 {% if interaction.sources.all.count > 0%}
                 <hr class="my-4">

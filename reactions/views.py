@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from django.shortcuts import render
 from itertools import chain
@@ -15,12 +15,6 @@ class ConditionListView(ListView):
     model = Condition
     context_object_name = 'condition_list'
     template_name = 'reactions/condition_list.html'
-
-class InteractionListView(ListView):
-    model = Interaction
-    context_object_name = 'interaction_list'
-    template_name = 'reactions/interaction_list.html'
-    queryset = Interaction.objects.all().prefetch_related('drugs', 'conditions')
 
 class DrugDetailView(DetailView):
     model = Drug
@@ -47,17 +41,6 @@ class InteractionDetailView(DetailView):
     context_object_name = 'interaction'
     template_name = 'reactions/interaction_detail.html'
     queryset = Interaction.objects.all().prefetch_related('drugs', 'conditions')
-
-class InteractionSearchResultsListView(ListView):
-    model = Interaction
-    context_object_name = 'interaction_list'
-    template_name = 'reactions/interaction_search_results.html'
-    
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        return (Interaction.objects
-            .filter(Q(conditions__name__icontains=query))
-            .prefetch_related('drugs', 'conditions'))
 
 def SearchView(request):
     query = request.GET.get('q')

@@ -106,10 +106,10 @@ class Interaction(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    name = LowercaseField(max_length=255)
+    name = LowercaseField(max_length=255, blank=False)
     conditions = models.ManyToManyField(Condition, related_name='interactions')
     drugs = models.ManyToManyField(Drug, related_name='interactions')
-    description = models.TextField()
+    description = models.TextField(blank=True)
     severity = models.CharField(
         max_length=2,
         choices=severity_choices,
@@ -118,7 +118,7 @@ class Interaction(models.Model):
         max_length=2,
         choices=evidence_choices,
         default=L7)
-    sources = models.ManyToManyField(Source, related_name='sources')
+    sources = models.ManyToManyField(Source, related_name='sources', blank=True)
     ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?')
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
