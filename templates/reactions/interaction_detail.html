@@ -4,8 +4,8 @@
 {% block content %}
 <div class="container col-xxl-8 px-4 py-5">
     <div class="row align-items-top g-5 py-5">
-        <div class="col-lg-4">
-            <h1 class="display-5 fw-bold lh-1 mb-3 text-break">{{ interaction.name | capfirst }}</h1>
+        <div class="col-md-4">
+            <h1 class="display-5 fw-bold lh-1 mb-3">{{ interaction.name | capfirst }}</h1>
             <small class="text-muted">Last modified: {{ interaction.date_modified }}</small>
             <hr class="my-4">
             <div class="alert {{ interaction.get_bootstrap_alert_colour }}" role="alert">
@@ -14,7 +14,7 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="col-lg-8 mx-auto">
+        <div class="col-md-8 mx-auto">
             <div class="p-4 p-md-5 border rounded-3 bg-light">
                 <div class="mb-3">
                     <h4>Susceptible conditions: </h4>
