@@ -4,27 +4,39 @@ from .models import DrugClass, Drug, Condition, Interaction, Source
 
 # Register your models here.
 
-class SourceAdmin(admin.ModelAdmin):
+class AbstractSaveAuthorModelAdmin(admin.ModelAdmin):
+    '''Overrides save_model to set created_by and last_edited_by fields to request.user'''
+    
+    def save_model(self, request, obj, form, change):
+        if obj.created_by == None: obj.created_by = request.user
+        obj.last_edited_by = request.user
+        super().save_model(request, obj, form, change)
+
+class SourceAdmin(AbstractSaveAuthorModelAdmin):
     search_fields = ('name', 'publication')
+    readonly_fields = ('created_by', 'last_edited_by')
 
-class DrugClassAdmin(admin.ModelAdmin):
+class DrugClassAdmin(AbstractSaveAuthorModelAdmin):
     search_fields = ('name',)
+    readonly_fields = ('created_by', 'last_edited_by')
 
-class DrugAdmin(admin.ModelAdmin):
+class DrugAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'aliases', 'get_drug_classes')
     prepopulated_fields = {'slug': ('name',)}
     filter_horizontal = ('drug_class',)
     search_fields = ('name',)
+    readonly_fields = ('created_by', 'last_edited_by')
 
     def get_queryset(self, request): # Prefetch many-many query
         qs = super().get_queryset(request)
         return qs.prefetch_related('drug_class')
 
-class InteractionAdmin(admin.ModelAdmin):
+class InteractionAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'get_condition_list', 'get_drug_list', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
     filter_horizontal = ('conditions', 'drugs', 'sources')
     search_fields = ('name',)
+    readonly_fields = ('created_by', 'last_edited_by')
 
     def get_queryset(self, request): # Prefetch many-many query
         qs = super().get_queryset(request)
@@ -34,11 +46,12 @@ class InteractionInline(admin.StackedInline):
     model = Interaction.conditions.through # Use intermediate table (for many-many relationship)
     extra = 1
 
-class ConditionAdmin(admin.ModelAdmin):
+class ConditionAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'aliases', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name', 'aliases')
+    readonly_fields = ('created_by', 'last_edited_by')
     inlines = [
         InteractionInline,
     ]

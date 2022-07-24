@@ -4,6 +4,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib import admin
 from django.utils.text import slugify
+from django.conf import settings
 
 
 # Create your models here.
@@ -19,6 +20,18 @@ class Source(models.Model):
     publication = LowercaseField(max_length=255, blank=False, verbose_name='Journal or publication name')
     reference = models.TextField(max_length=1023, blank=True, verbose_name='Full reference')
     url = models.URLField(max_length=200, blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'source_created_by'
+    )
+    last_edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'source_edited_by'
+    )
 
     def __str__(self):
         return f'{self.name[:30]} in {self.publication[:30]}'
@@ -26,6 +39,18 @@ class Source(models.Model):
 class DrugClass(models.Model):
     name = LowercaseField(max_length=255)
     description = models.TextField(max_length=1023, blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'drug_class_created_by'
+    )
+    last_edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'drug_class_edited_by'
+    )
 
     def __str__(self):
         return self.name
@@ -35,6 +60,18 @@ class Drug(models.Model):
     aliases = LowercaseField(max_length=1023, blank=True)
     slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
     drug_class = models.ManyToManyField(DrugClass, blank=True, related_name='drugs')
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'drug_created_by'
+    )
+    last_edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'drug_edited_by'
+    )
 
     class Meta:
         ordering = ['name']
@@ -60,6 +97,18 @@ class Condition(models.Model):
     ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?')
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'condition_created_by'
+    )
+    last_edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'condition_edited_by'
+    )
 
     class Meta:
         ordering = ['name']
@@ -122,6 +171,18 @@ class Interaction(models.Model):
     ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?')
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'interaction_created_by'
+    )
+    last_edited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'interaction_edited_by'
+    )
 
     def get_bootstrap_alert_colour(self): # chooses bootstrap alert colour based on interaction.severity
         severity_alert_dict = { 
