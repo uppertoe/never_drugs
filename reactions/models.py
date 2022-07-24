@@ -211,7 +211,7 @@ class Interaction(models.Model):
         string_length = 30 # Insert '...' for long names
         if len(drugs_string) > string_length: drugs_string = drugs_string[:string_length] + '...'
         if len(conditions_string) > string_length: conditions_string = conditions_string[:string_length] + '...'
-        return f'{self.name}: {conditions_string} with {drugs_string}'
+        return f'{self.name}: {conditions_string} with {drugs_string}'.capitalize()
 
     def get_absolute_url(self):
         return reverse('interaction_detail', kwargs={'str': slugify(self.name), 'pk': str(self.id)})

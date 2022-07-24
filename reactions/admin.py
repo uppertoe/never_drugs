@@ -14,14 +14,17 @@ class AbstractSaveAuthorModelAdmin(admin.ModelAdmin):
 
 class SourceAdmin(AbstractSaveAuthorModelAdmin):
     search_fields = ('name', 'publication')
+    list_filter = ('created_by', 'last_edited_by')
     readonly_fields = ('created_by', 'last_edited_by')
 
 class DrugClassAdmin(AbstractSaveAuthorModelAdmin):
     search_fields = ('name',)
+    list_filter = ('created_by', 'last_edited_by')
     readonly_fields = ('created_by', 'last_edited_by')
 
 class DrugAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'aliases', 'get_drug_classes')
+    list_filter = ('created_by', 'last_edited_by')
     prepopulated_fields = {'slug': ('name',)}
     filter_horizontal = ('drug_class',)
     search_fields = ('name',)
@@ -34,6 +37,7 @@ class DrugAdmin(AbstractSaveAuthorModelAdmin):
 class InteractionAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'get_condition_list', 'get_drug_list', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
+    list_filter = ('created_by', 'last_edited_by')
     filter_horizontal = ('conditions', 'drugs', 'sources')
     search_fields = ('name',)
     readonly_fields = ('created_by', 'last_edited_by')
@@ -49,6 +53,7 @@ class InteractionInline(admin.StackedInline):
 class ConditionAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'aliases', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
+    list_filter = ('created_by', 'last_edited_by')
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name', 'aliases')
     readonly_fields = ('created_by', 'last_edited_by')
