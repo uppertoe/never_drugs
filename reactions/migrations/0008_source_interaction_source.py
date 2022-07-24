@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
             name='Source',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', reactions.models.LowercaseField(max_length=255, verbose_name='Article title')),
-                ('publication', reactions.models.LowercaseField(max_length=255, verbose_name='Journal or publication name')),
+                ('name', models.CharField(max_length=255, verbose_name='Article title')),
+                ('publication', models.CharField(max_length=255, verbose_name='Journal or publication name')),
                 ('reference', models.TextField(blank=True, max_length=1023, verbose_name='Full reference')),
                 ('url', models.URLField(blank=True)),
             ],

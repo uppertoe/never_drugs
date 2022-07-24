@@ -8,70 +8,57 @@ from django.conf import settings
 
 
 # Create your models here.
-class LowercaseField(models.CharField): # Override CharField to store lowercase strings
-    def __init__(self, *args, **kwargs):
-        super(LowercaseField, self).__init__(*args, **kwargs)
-
-    def get_prep_value(self, value):
-        return str(value).lower()
-
 class Source(models.Model):
-    name = LowercaseField(max_length=255, blank=False, verbose_name='Article title')
-    publication = LowercaseField(max_length=255, blank=False, verbose_name='Journal or publication name')
+    name = models.CharField(max_length=255, blank=False, verbose_name='Article title')
+    publication = models.CharField(max_length=255, blank=False, verbose_name='Journal or publication name')
     reference = models.TextField(max_length=1023, blank=True, verbose_name='Full reference')
     url = models.URLField(max_length=200, blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'source_created_by'
-    )
+        related_name = 'source_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'source_edited_by'
-    )
+        related_name = 'source_edited_by')
 
     def __str__(self):
         return f'{self.name[:30]} in {self.publication[:30]}'
 
 class DrugClass(models.Model):
-    name = LowercaseField(max_length=255)
+    name = models.CharField(max_length=255)
     description = models.TextField(max_length=1023, blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'drug_class_created_by'
-    )
+        related_name = 'drug_class_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'drug_class_edited_by'
-    )
+        related_name = 'drug_class_edited_by')
 
     def __str__(self):
         return self.name
 
 class Drug(models.Model):
-    name = LowercaseField(max_length=255, unique=True)
-    aliases = LowercaseField(max_length=1023, blank=True)
+    name = models.CharField(max_length=255, unique=True)
+    aliases = models.CharField(max_length=1023, blank=True)
     slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
     drug_class = models.ManyToManyField(DrugClass, blank=True, related_name='drugs')
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'drug_created_by'
-    )
+        related_name = 'drug_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'drug_edited_by'
-    )
+        related_name = 'drug_edited_by')
 
     class Meta:
         ordering = ['name']
@@ -90,25 +77,23 @@ class Drug(models.Model):
         return self.name
 
 class Condition(models.Model):
-    name = LowercaseField(max_length=255, unique=True)
-    aliases = LowercaseField(max_length=1023, blank=True)
+    name = models.CharField(max_length=255, unique=True)
+    aliases = models.CharField(max_length=1023, blank=True)
     slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
     description = models.TextField(max_length=1023, blank=True)
-    ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?')
+    ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?') # False excludes from search
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'condition_created_by'
-    )
+        related_name = 'condition_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'condition_edited_by'
-    )
+        related_name = 'condition_edited_by')
 
     class Meta:
         ordering = ['name']
@@ -129,8 +114,7 @@ class Interaction(models.Model):
         (NA, 'Not applicable'),
         (MILD, 'Mild'),
         (MODERATE, 'Moderate'),
-        (SEVERE, 'Severe'),
-    ]
+        (SEVERE, 'Severe'),]
     
     # Evidence level choices
     L1 = 'L1'
@@ -148,14 +132,13 @@ class Interaction(models.Model):
         (L4, 'Well designed case-control or cohort studies'),
         (L5, 'Reviews of qualitative studies'),
         (L6, 'Single qualitative study'),
-        (L7, 'Expert body opinion'),
-    ]
+        (L7, 'Expert body opinion'),]
     
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    name = LowercaseField(max_length=255, blank=False)
+    name = models.CharField(max_length=255, blank=False)
     conditions = models.ManyToManyField(Condition, related_name='interactions')
     drugs = models.ManyToManyField(Drug, related_name='interactions')
     description = models.TextField(blank=True)
@@ -168,29 +151,26 @@ class Interaction(models.Model):
         choices=evidence_choices,
         default=L7)
     sources = models.ManyToManyField(Source, related_name='sources', blank=True)
-    ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?')
+    ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?') # False excludes from search
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'interaction_created_by'
-    )
+        related_name = 'interaction_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'interaction_edited_by'
-    )
+        related_name = 'interaction_edited_by')
 
     def get_bootstrap_alert_colour(self): # chooses bootstrap alert colour based on interaction.severity
         severity_alert_dict = { 
             'NA': 'alert-secondary',
             'MI': 'alert-primary',
             'MO': 'alert-warning',
-            'SE': 'alert-danger',
-        }
+            'SE': 'alert-danger',}
         return severity_alert_dict.get(self.severity)
 
     def get_condition_string(self):

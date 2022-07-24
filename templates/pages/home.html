@@ -6,9 +6,9 @@
 {% block content %}
 <div class="px-4 py-5 my-5 text-center">
     <h1 class="display-5 fw-bold">Welcome to neverDrugs.io</h1>
-    <div class="col-lg-6 mx-auto">
+    <div class="col-md-6 mx-auto">
         <p class="lead mb-4">Rapidly identify anaesthetic drugs that are contraindicated in rare conditions.</p>
-        <div class="p-5 rounded-lg m-3  align-items-center">
+        <div class="p-3 rounded-lg m-3  align-items-center">
             <form action="{% url 'search' %}" method='get' class='d-flex'>
                 <div class="mb-2 input-group">
                     <input type="search" class="form-control" name='q' placeholder="Condition or drug">
