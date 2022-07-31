@@ -6,7 +6,6 @@ from django.contrib import admin
 from django.utils.text import slugify
 from django.conf import settings
 
-
 # Create your models here.
 class Source(models.Model):
     name = models.CharField(max_length=255, blank=False, verbose_name='Article title')
@@ -140,8 +139,8 @@ class Interaction(models.Model):
         editable=False)
     name = models.CharField(max_length=255, blank=False)
     conditions = models.ManyToManyField(Condition, related_name='interactions')
-    drugs = models.ManyToManyField(Drug, related_name='interactions')
-    secondary_drugs = models.ManyToManyField(Drug, related_name='secondary_interactions')
+    drugs = models.ManyToManyField(Drug, related_name='interactions', verbose_name='Contraindicated drugs', blank=True)
+    secondary_drugs = models.ManyToManyField(Drug, related_name='secondary_interactions', verbose_name='Drugs to use with caution', blank=True)
     description = models.TextField(blank=True)
     severity = models.CharField(
         max_length=2,

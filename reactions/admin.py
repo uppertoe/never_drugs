@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.forms import ModelForm
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from .models import DrugClass, Drug, Condition, Interaction, Source
 
@@ -34,11 +37,30 @@ class DrugAdmin(AbstractSaveAuthorModelAdmin):
         qs = super().get_queryset(request)
         return qs.prefetch_related('drug_class')
 
+class InteractionAdminForm(ModelForm):
+    '''Implement validation for the InteractionAdmin'''
+    class Meta():
+        model = Interaction
+        exclude = ()
+    
+    def clean(self):
+        #Ensure that the same drug is not recorded in self.drug and self.secondary_drug
+        data = self.cleaned_data
+        errors = []
+        for secondary_drug in data['secondary_drugs']:
+            if secondary_drug in data['drugs']:
+                errors.append(ValidationError(
+                    _('%(secondary_drug)s cannot be present in both the \'contraindicated drugs\' and \'drugs to use with caution\' lists'),
+                    params={'secondary_drug': secondary_drug},))
+        if errors: raise ValidationError(errors)
+        return data
+
 class InteractionAdmin(AbstractSaveAuthorModelAdmin):
+    form = InteractionAdminForm
     list_display = ('name', 'get_condition_list', 'get_drug_list', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
     list_filter = ('created_by', 'last_edited_by')
-    filter_horizontal = ('conditions', 'drugs', 'sources')
+    filter_horizontal = ('conditions', 'drugs', 'secondary_drugs', 'sources')
     search_fields = ('name',)
     readonly_fields = ('created_by', 'last_edited_by')
 
