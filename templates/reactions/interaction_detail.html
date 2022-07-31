@@ -8,23 +8,34 @@
             <h1 class="display-5 fw-bold lh-1 mb-3">{{ interaction.name | capfirst }}</h1>
             <small class="text-muted">Last modified: {{ interaction.date_modified }}</small>
             <hr class="my-4">
-            <div class="alert {{ interaction.get_bootstrap_alert_colour }}" role="alert">
+            {% if interaction.drugs.all %}
+            <div class="alert alert-danger" role="alert">
+                <h6 class="alert-heading">Contraindicated:</h6>
                 {% for drug in interaction.drugs.all %}
+                <p class=" mb-0">{{drug.name | capfirst}}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if interaction.secondary_drugs.all %}
+            <div class="alert alert-secondary" role="alert">
+                <h6 class="alert-heading">Use with caution:</h6>
+                {% for drug in interaction.secondary_drugs.all %}
                 <p class="mb-0">{{drug.name | capfirst}}</p>
                 {% endfor %}
             </div>
+            {% endif %}
         </div>
         <div class="col-md-8 mx-auto">
             <div class="p-4 p-md-5 border rounded-3 bg-light">
                 <div class="mb-3">
-                    <h4>Susceptible conditions: </h4>
+                    <h4>Susceptible conditions:</h4>
                     <p>{{ interaction.get_condition_string | capfirst }}</p>
                 </div>
                 <div class="mb-3">
                     <h4>Description:</h4>
                     <p>{{ interaction.description | linebreaks }}</p>
                 </div>
-                {% if interaction.sources.all.count > 0%}
+                {% if interaction.sources.all %}
                 <hr class="my-4">
                 <h6 class="text-muted">References</h6>
                 {% for source in interaction.sources.all %}

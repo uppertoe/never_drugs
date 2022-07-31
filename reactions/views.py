@@ -44,7 +44,7 @@ class InteractionDetailView(DetailView):
     model = Interaction
     context_object_name = 'interaction'
     template_name = 'reactions/interaction_detail.html'
-    queryset = Interaction.objects.all().prefetch_related('drugs', 'conditions')
+    queryset = Interaction.objects.all().prefetch_related('drugs', 'conditions', 'sources')
 
 def SearchView(request):
     query = request.GET.get('q')
