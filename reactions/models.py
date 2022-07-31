@@ -141,7 +141,7 @@ class Interaction(models.Model):
     name = models.CharField(max_length=255, blank=False)
     conditions = models.ManyToManyField(Condition, related_name='interactions')
     drugs = models.ManyToManyField(Drug, related_name='interactions')
-    secondary_drugs = models.ManyToManyField(Drug, related_name='interactions')
+    secondary_drugs = models.ManyToManyField(Drug, related_name='secondary_interactions')
     description = models.TextField(blank=True)
     severity = models.CharField(
         max_length=2,
