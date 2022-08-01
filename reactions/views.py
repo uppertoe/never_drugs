@@ -23,7 +23,12 @@ class DrugDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Include related interactions via interactions.drugs related_name
         context['interactions'] = (self.object.interactions.all()
+        .exclude(ready_to_publish=False)
+        .prefetch_related('conditions',))
+        # Include related interactions via interactions.secondary_drugs related_name
+        context['secondary_interactions'] = (self.object.secondary_interactions.all()
         .exclude(ready_to_publish=False)
         .prefetch_related('conditions',))
         return context
@@ -37,14 +42,14 @@ class ConditionDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['interactions'] = (self.object.interactions.all()
         .exclude(ready_to_publish=False)
-        .prefetch_related('drugs',))
+        .prefetch_related('drugs', 'secondary_drugs'))
         return context
 
 class InteractionDetailView(DetailView):
     model = Interaction
     context_object_name = 'interaction'
     template_name = 'reactions/interaction_detail.html'
-    queryset = Interaction.objects.all().prefetch_related('drugs', 'conditions', 'sources')
+    queryset = Interaction.objects.all().prefetch_related('drugs', 'secondary_drugs', 'conditions', 'sources')
 
 def SearchView(request):
     query = request.GET.get('q')

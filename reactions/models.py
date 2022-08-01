@@ -177,11 +177,11 @@ class Interaction(models.Model):
         return ', '.join([condition.name for condition in self.conditions.all()])
     
     @admin.display(description='Drugs')
-    def get_drug_list(self): # Allow many-many relationship query
+    def get_drug_list(self): # Allow many-many relationship query for admin list_display
         return [drug for drug in self.drugs.all()]
 
     @admin.display(description='Conditions')
-    def get_condition_list(self): # Allow many-many relationship query
+    def get_condition_list(self): # Allow many-many relationship query for admin list_display
         return [condition for condition in self.conditions.all()]
 
     def __str__(self):
