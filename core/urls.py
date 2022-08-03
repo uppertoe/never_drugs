@@ -25,6 +25,7 @@ urlpatterns = [
     # User management
     path('accounts/', include('allauth.urls')),
     # Local apps
+    path('tickets/', include('tickets.urls')),
     path('', include('pages.urls')),
     path('', include('reactions.urls')),
 ] + static(
