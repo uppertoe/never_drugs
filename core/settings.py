@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig',
     'reactions.apps.ReactionsConfig',
+    'tickets.apps.TicketsConfig',
 ]
 
 MIDDLEWARE = [
