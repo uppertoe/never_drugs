@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.generic import RedirectView
 
 from .views import (DrugDetailView, DrugListView, ConditionDetailView, 
-ConditionListView, InteractionDetailView, SearchView)
+ConditionListView, InteractionDetailView, SearchView, ListContentsView)
 
 urlpatterns = [
     path('drug/', DrugListView.as_view(), name='drug_list'),
@@ -12,4 +12,5 @@ urlpatterns = [
     path('interaction/<str:str>/<uuid:pk>', InteractionDetailView.as_view(), name='interaction_detail'),
     path('search/', SearchView, name='search'),
     path('interaction/', RedirectView.as_view(url='/search/')),
+    path('list-contents/', ListContentsView, name='list-contents')
 ]

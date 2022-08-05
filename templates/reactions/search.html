@@ -45,5 +45,8 @@
 {% endif %}
 {% endblock item_loop %}
 {% block javascript %}
+<script language='Javascript'>
+    var ajax_url = "{% url 'list-contents' %}";
+</script>
 <script src='{% static 'js/autocomplete.js' %}'></script>
 {% endblock javascript %}

@@ -1,6 +1,8 @@
+import json
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from django.shortcuts import render
+from django.http import HttpResponseBadRequest, JsonResponse
 from itertools import chain
 
 from .models import Drug, Condition, Interaction
@@ -66,3 +68,15 @@ def SearchView(request):
             'query': query,}
         return render(request, 'reactions/search.html', context)
     return render(request, 'reactions/search.html') # template {% if %} to catch empty context
+
+def ListContentsView(request):
+    is_ajax = request.accepts("application/json")
+    print(is_ajax)
+    if is_ajax:
+        if request.method == 'GET':
+            drugs = list(Drug.objects.values_list('name', flat=True))
+            conditions = list(Condition.objects.values_list('name', flat=True))
+            return JsonResponse({'context': drugs + conditions})
+        return JsonResponse({'status': 'Bad Request'}, status=400)
+    else:
+        return HttpResponseBadRequest('Bad Request')
