@@ -2,16 +2,24 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.timezone import now, timedelta
 
 from .models import Ticket
 
 # Create your views here.
-class TicketListView(ListView):
-    queryset = Ticket.objects.filter(actioned=False)
+class TicketListView(LoginRequiredMixin, ListView):
     context_object_name = 'ticket_list'
     template_name = 'tickets/ticket_list.html'
 
-class TicketDetailView(DetailView):
+    def get_querset(self):
+        '''Show superusers all (non-actioned) Tickets, and logged-in users their own Tickets'''
+        if self.request.user.is_superuser:
+            return Ticket.objects.filter(actioned=False)
+        else:
+            return Ticket.objects.filter(created_by=self.request.user)
+
+class TicketDetailView(LoginRequiredMixin, DetailView):
     model = Ticket
     context_object_name = 'ticket'
     template_name = 'tickets/ticket_detail.html'
@@ -28,6 +36,18 @@ class TicketCreateView(CreateView):
 class TicketUpdateView(UpdateView):
     model = Ticket
     fields = 'condition', 'drugs', 'description'
+
+    def get_context_data(self, **kwargs):
+        '''
+        Ticket delete button available when existing_ticket == True
+        Allow if ticket created within 1 hour of datetime.now()
+        '''
+        context = super().get_context_data(**kwargs)
+        print(self.object.date_created)
+        print(now() - timedelta(hours=1))
+        if self.object.date_created > now() - timedelta(hours=1):
+            context['existing_ticket'] = True
+        return context
 
 class TicketDeleteView(DeleteView):
     model = Ticket

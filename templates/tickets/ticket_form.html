@@ -14,7 +14,11 @@
             <form method="post" class="p-4 p-md-5 border rounded-3 bg-light">
                 {% csrf_token %}
                 {{ form | crispy }}
-                <input type="submit" value="submit">
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
+                {% if existing_ticket %}
+                <a href="{% url 'ticket-delete' ticket.id %}" class="w-100 btn btn-lg btn-danger"
+                    type="button">Delete</a>
+                {% endif %}
             </form>
         </div>
     </div>

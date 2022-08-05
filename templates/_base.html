@@ -11,6 +11,7 @@
         integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <!--Local CSS-->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block css %}{% endblock css %}
 </head>
 
 <nav class="navbar navbar-dark bg-dark navbar-expand-lg sticky-top">
@@ -85,5 +86,6 @@
 </script>
 <!--Local JavaScript-->
 <script src='{% static 'js/base.js' %}'></script>
+{% block javascript %}{% endblock javascript %}
 
 </html>

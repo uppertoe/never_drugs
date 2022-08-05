@@ -19,18 +19,15 @@ class Ticket(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'ticket_created_by'
-    )
+        related_name = 'ticket_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
-        related_name = 'ticket_edited_by',
-    )
+        related_name = 'ticket_edited_by')
 
     def get_absolute_url(self):
         return reverse('ticket-update', kwargs={'pk': self.id})
 
     def __str__(self):
         return self.condition
-

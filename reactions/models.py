@@ -123,7 +123,6 @@ class Interaction(models.Model):
     L5 = 'L5'
     L6 = 'L6'
     L7 = 'L7'
-
     evidence_choices = [
         (L1, 'Systematic review of RCTs'),
         (L2, 'Well-designed RCT'),

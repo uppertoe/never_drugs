@@ -1,39 +1,49 @@
 {% extends 'reactions/_item_list.html' %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/autocomplete.css' %}">
+{% endblock css %}
+
 {% block heading %}Search{% endblock heading %}
 {% block description %}Look up conditions and anaesthetic drugs{% endblock description %}
 {% block item_loop %}
-<form action="{% url 'search' %}" method='get' class='d-flex'>
-    <div class="mb-3 input-group">
-        <input type="search" class="form-control" name='q'
-            placeholder="{% if request.GET.q %}{{ request.GET.q }}{% else %}Drug or condition{% endif %}">
-        <div class="input-group-append"><button class="btn btn-outline-success" type='submit'>Search</button>
+<div>
+    <form action="{% url 'search' %}" method='get' class='d-flex'>
+        <div class="input-group mb-3">
+            <input type="search" class="form-control" name='q' id='autocompleteInput'
+                placeholder="{% if request.GET.q %}{{ request.GET.q }}{% else %}Drug or condition{% endif %}">
+            <button class="btn btn-outline-success" type='submit'>Search</button>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 {% if results %}
-{% for result in results %}
-<a href="{{ result.get_absolute_url }}" class="list-group-item list-group-item-action d-flex gap-3 py-3"
-    aria-current="true">
-    <div class="d-flex gap-2 w-100 justify-content-between">
-        <div>
-            <h6 class="mb-0">{{ result.name | capfirst }}</h6>
-            {% if result.aliases %}
-            <p class="mb-0 opacity-75">Also known as: {{result.aliases}}</p>
-            {% endif %}
+<div class="list-group">
+    {% for result in results %}
+    <a href="{{ result.get_absolute_url }}" class="list-group-item list-group-item-action d-flex gap-3 py-3"
+        aria-current="true">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h6 class="mb-0">{{ result.name | capfirst }}</h6>
+                {% if result.aliases %}
+                <p class="mb-0 opacity-75">Also known as: {{result.aliases}}</p>
+                {% endif %}
+            </div>
         </div>
-    </div>
-    {% if result.interactions.count > 0 %}
-    <button type="button" class="btn btn-secondary position-relative">
-        Interactions
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ result.interactions.count }}
-            <span class="visually-hidden">interaction count</span>
-        </span>
-    </button>
-    {% endif %}
-</a>
-{% endfor %}
+        {% if result.interactions.all %}
+        <button type="button" class="btn btn-secondary position-relative">
+            Interactions
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ result.interactions.count }}
+                <span class="visually-hidden">interaction count</span>
+            </span>
+        </button>
+        {% endif %}
+    </a>
+    {% endfor %}
+</div>
 {% endif %}
 {% endblock item_loop %}
+{% block javascript %}
+<script src='{% static 'js/autocomplete.js' %}'></script>
+{% endblock javascript %}
