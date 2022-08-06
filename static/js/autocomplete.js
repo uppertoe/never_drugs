@@ -8,7 +8,6 @@ function autocomplete(inp, arr) {
         /*close any already open lists of autocompleted values*/
         closeAllLists();
         if (val.length < 2) {return false;}
-        console.log(val)
         currentFocus = -1;
         /*create a DIV element that will contain the items (values):*/
         a = document.createElement("DIV");
@@ -27,7 +26,8 @@ function autocomplete(inp, arr) {
             b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
             b.innerHTML += arr[i].substr(val.length);
             /*insert a input field that will hold the current array item's value:*/
-            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+            /*decodeURIComponent to undo escaping on JSON recieved from view*/
+            b.innerHTML += "<input type='hidden' value='"+decodeURIComponent(arr[i])+"'>"
             /*execute a function when someone clicks on the item value (DIV element):*/
             b.addEventListener("click", function(e) {
                 /*insert the value for the autocomplete text field:*/

@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from django.shortcuts import render
 from django.http import HttpResponseBadRequest, JsonResponse
+from django.utils.html import escape
 from itertools import chain
 
 from .models import Drug, Condition, Interaction
@@ -71,11 +72,11 @@ def SearchView(request):
 
 def ListContentsView(request):
     is_ajax = request.accepts("application/json")
-    print(is_ajax)
     if is_ajax:
         if request.method == 'GET':
-            drugs = list(Drug.objects.values_list('name', flat=True))
-            conditions = list(Condition.objects.values_list('name', flat=True))
+            # Converts values_list tuple into list with '' removed, then performs escape() on each returning a list of escaped strings
+            drugs = [escape(drug) for drug in list(filter(None, chain(*Drug.objects.values_list('name', 'aliases'))))]
+            conditions = [escape(condition) for condition in list(filter(None,chain(*Condition.objects.values_list('name', 'aliases'))))]
             return JsonResponse({'context': drugs + conditions})
         return JsonResponse({'status': 'Bad Request'}, status=400)
     else:
