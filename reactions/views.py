@@ -74,7 +74,7 @@ def ListContentsView(request):
     is_ajax = request.accepts("application/json")
     if is_ajax:
         if request.method == 'GET':
-            # Converts values_list tuple into list with '' removed, then performs escape() on each returning a list of escaped strings
+            # Converts values_list tuple into list with '' removed, then performs escape() on each -> list of escaped strings
             drugs = [escape(drug) for drug in list(filter(None, chain(*Drug.objects.values_list('name', 'aliases'))))]
             conditions = [escape(condition) for condition in list(filter(None,chain(*Condition.objects.values_list('name', 'aliases'))))]
             return JsonResponse({'context': drugs + conditions})

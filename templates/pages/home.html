@@ -1,25 +1,41 @@
 {% extends '_base.html' %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/autocomplete.css' %}">
+{% endblock css %}
+
 {% block content %}
-<div class="px-4 py-5 my-5 text-center">
-    <h1 class="display-5 fw-bold">Welcome to neverDrugs.io</h1>
+<div class="px-4 py-5 my-5">
+    <h1 class="display-5 fw-bold text-center">Welcome to neverDrugs.io</h1>
     <div class="col-md-6 mx-auto">
-        <p class="lead mb-4">Rapidly identify anaesthetic drugs that are contraindicated in rare conditions.</p>
-        <div class="p-3 rounded-lg m-3  align-items-center">
-            <form action="{% url 'search' %}" method='get' class='d-flex'>
-                <div class="mb-2 input-group">
-                    <input type="search" class="form-control" name='q' placeholder="Condition or drug">
-                    <button class="btn btn-outline-success" type='submit'>Search</button>
-                </div>
-            </form>
+        <p class="lead mb-4 text-center">Rapidly identify anaesthetic drugs that are contraindicated in rare conditions.
+        </p>
+        <div class="p-3 rounded-lg m-3">
+            <div>
+                <form action="{% url 'search' %}" method='get' class='d-flex'>
+                    <div class="mb-2 input-group">
+                        <input type="search" class="form-control" name='q' placeholder="Condition or drug"
+                            id='autocompleteInput'>
+                        <button class="btn btn-outline-success" type='submit'>Search</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="text-muted">
             {% if user.is_authenticated %}
-            <p>Hi {{ user.email }}</p>
-            <p><a href="{% url 'account_logout' %}">Log out</a></p>
+            <div class="text-center">
+                <p>Hi {{ user.email }}</p>
+                <p><a href="{% url 'account_logout' %}">Log out</a></p>
+            </div>
             {% endif %}
         </div>
     </div>
 </div>
 {% endblock content %}
+{% block javascript %}
+<script language='Javascript'>
+    var ajax_url = "{% url 'list-contents' %}";
+</script>
+<script src='{% static 'js/autocomplete.js' %}'></script>
+{% endblock javascript %}
