@@ -1,4 +1,3 @@
-import json
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from django.shortcuts import render
@@ -66,7 +65,8 @@ def SearchView(request):
         .prefetch_related('interactions'))
         context = {
             'results': chain(drugs,conditions), #combine querysets from both models
-            'query': query,}
+            'query': query,
+            'offer_to_add': False if drugs.exists() | conditions.exists() else True,}
         return render(request, 'reactions/search.html', context)
     return render(request, 'reactions/search.html') # template {% if %} to catch empty context
 

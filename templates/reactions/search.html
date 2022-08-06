@@ -43,6 +43,9 @@
     {% endfor %}
 </div>
 {% endif %}
+{% if offer_to_add %}
+<p>Would you like to add this?</p>
+{% endif %}
 {% endblock item_loop %}
 {% block javascript %}
 <script language='Javascript'>

@@ -1,5 +1,6 @@
 from django.urls import path
 from django.views.generic import RedirectView
+from django.views.decorators.cache import cache_page
 
 from .views import (DrugDetailView, DrugListView, ConditionDetailView, 
 ConditionListView, InteractionDetailView, SearchView, ListContentsView)
@@ -12,5 +13,6 @@ urlpatterns = [
     path('interaction/<str:str>/<uuid:pk>', InteractionDetailView.as_view(), name='interaction_detail'),
     path('search/', SearchView, name='search'),
     path('interaction/', RedirectView.as_view(url='/search/')),
-    path('list-contents/', ListContentsView, name='list-contents')
+    # AJAX operation for URL-specific per-view cache
+    path('list-contents/', cache_page(60 * 15)(ListContentsView), name='list-contents')
 ]
