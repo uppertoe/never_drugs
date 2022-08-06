@@ -70,13 +70,28 @@ def SearchView(request):
         return render(request, 'reactions/search.html', context)
     return render(request, 'reactions/search.html') # template {% if %} to catch empty context
 
+def escape_model_fields(model,sep, *args):
+    '''
+    Takes a model, separator and fields to return as a list of escaped strings
+
+    Arguments:
+    model: Model on which to obtain .values_list
+    sep: Separator to split the .values_list string on
+    *args: Model fields to include
+    '''
+    output = []
+    #Converts values_list tuple into list with empty strings removed
+    for i in list(filter(None, chain(*model.objects.values_list(*args)))):
+        # Splits on user-entered separators in model.field
+        for k in i.split(sep): output.append(escape(k))
+    return output
+
 def ListContentsView(request):
     is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
     if is_ajax:
         if request.method == 'GET':
-            # Converts values_list tuple into list with '' removed, then performs escape() on each -> list of escaped strings
-            drugs = [escape(drug) for drug in list(filter(None, chain(*Drug.objects.values_list('name', 'aliases'))))]
-            conditions = [escape(condition) for condition in list(filter(None,chain(*Condition.objects.values_list('name', 'aliases'))))]
+            drugs = escape_model_fields(Drug, ', ', 'name', 'aliases')
+            conditions = escape_model_fields(Condition, ', ', 'name', 'aliases')
             return JsonResponse({'context': drugs + conditions})
         return JsonResponse({'status': 'Bad Request'}, status=400)
     else:
