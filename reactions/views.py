@@ -53,8 +53,9 @@ class InteractionDetailView(DetailView):
     template_name = 'reactions/interaction_detail.html'
     queryset = Interaction.objects.all().prefetch_related('drugs', 'secondary_drugs', 'conditions', 'sources')
 
-def SearchView(request):
+def SearchView(request, **kwargs):
     query = request.GET.get('q')
+    context = kwargs
     if query:
         drugs = (Drug.objects
         .filter(Q(name__icontains=query) | Q(aliases__icontains=query))
@@ -81,9 +82,9 @@ def escape_model_fields(model,sep, *args):
     '''
     output = []
     #Converts values_list tuple into list with empty strings removed
-    for i in list(filter(None, chain(*model.objects.values_list(*args)))):
+    for field_strings in list(filter(None, chain(*model.objects.values_list(*args)))):
         # Splits on user-entered separators in model.field
-        for k in i.split(sep): output.append(escape(k))
+        for split_string in field_strings.split(sep): output.append(escape(split_string))
     return output
 
 def ListContentsView(request):
