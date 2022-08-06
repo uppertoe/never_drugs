@@ -71,7 +71,7 @@ def SearchView(request):
     return render(request, 'reactions/search.html') # template {% if %} to catch empty context
 
 def ListContentsView(request):
-    is_ajax = request.accepts("application/json")
+    is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
     if is_ajax:
         if request.method == 'GET':
             # Converts values_list tuple into list with '' removed, then performs escape() on each -> list of escaped strings
