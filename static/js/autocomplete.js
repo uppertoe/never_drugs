@@ -99,7 +99,6 @@ function autocomplete(inp, arr) {
         closeAllLists(e.target);
     });
   }
-
   fetch(ajax_url, {
     method: "GET",
     headers: {
