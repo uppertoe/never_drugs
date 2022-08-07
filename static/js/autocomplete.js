@@ -99,7 +99,7 @@ function autocomplete(inp, arr) {
         closeAllLists(e.target);
     });
   }
-  fetch(ajax_url, {
+  fetch(autocomplete_url, {
     method: "GET",
     headers: {
       "Accept": "application/json",

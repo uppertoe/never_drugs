@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import now, timedelta
+from django.http import JsonResponse
 
 from .models import Ticket
 
@@ -32,6 +33,12 @@ class TicketCreateView(CreateView):
         if self.request.user.is_authenticated:
             form.instance.created_by = self.request.user
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+        if is_ajax:
+            return JsonResponse({'result': 'submitted'})
+        return super().post(request, *args, **kwargs)
 
 class TicketUpdateView(UpdateView):
     model = Ticket

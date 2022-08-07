@@ -51,18 +51,21 @@
 </button>
 <div class="collapse py-3" id="ticket-form">
     <div class="p-4 p-md-5 border rounded-3 bg-light">
-        <form method="post">
+        <form method="post" id='form'>
             {% csrf_token %}
             {{ ticket_form | crispy }}
+            <button class="w-100 btn btn-lg btn-primary" type='submit'>Submit</button>
         </form>
-        <button class="w-100 btn btn-lg btn-primary">Submit</button>
+
     </div>
 </div>
 {% endif %}
 {% endblock item_loop %}
 {% block javascript %}
-<script language='Javascript'>
-    var ajax_url = "{% url 'list-contents' %}";
+<script>
+    const autocomplete_url = "{% url 'list-contents' %}";
+    const ticket_url = "{% url 'ticket-create' %}";
 </script>
+<script src='{% static 'js/ticket.js' %}'></script>
 <script src='{% static 'js/autocomplete.js' %}'></script>
 {% endblock javascript %}

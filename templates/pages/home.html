@@ -35,7 +35,7 @@
 {% endblock content %}
 {% block javascript %}
 <script>
-    const ajax_url = "{% url 'list-contents' %}";
+    const autocomplete_url = "{% url 'list-contents' %}";
 </script>
 <script src='{% static 'js/autocomplete.js' %}'></script>
 {% endblock javascript %}
