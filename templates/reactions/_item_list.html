@@ -1,14 +1,14 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<div class="container col-xxl-8 px-4 py-5">
-    <div class="row align-items-top g-5 py-5">
+<div class="container px-4 py-5">
+    <div class="row align-items-top d-flex">
         <div class="col-md-4">
             <h1 class="display-5 fw-bold lh-1 mb-3">{% block heading %}{% endblock heading %}</h1>
             {% block subheading %}{% endblock subheading %}
             <p class="lead">{% block description %}{% endblock description %}</p>
         </div>
-        <div class="list-group col-12 col-md-8 mx-auto p-4 p-md-5">
+        <div class="list-group px-md-4 col-md-8">
             {% block item_loop %}
             {% endblock item_loop %}
         </div>

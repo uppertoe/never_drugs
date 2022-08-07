@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block content %}
-<div class="container col-xxl-8 px-4 py-5">
-    <div class="row align-items-top g-5 py-5">
-        <div class="col-md-4">
+<div class="container px-4 py-5">
+    <div class="row align-items-top d-flex">
+        <div class="col-md-6 col-lg-4">
             <h1 class="display-5 fw-bold lh-1 mb-3">{{ interaction.name | capfirst }}</h1>
             <small class="text-muted">Last modified: {{ interaction.date_modified }}</small>
             <hr class="my-4">
@@ -25,7 +25,7 @@
             </div>
             {% endif %}
         </div>
-        <div class="col-md-8 mx-auto">
+        <div class="px-md-4 col-md-6 col-lg-8">
             <div class="p-4 p-md-5 border rounded-3 bg-light">
                 <div class="mb-3">
                     <h4>Susceptible conditions:</h4>
