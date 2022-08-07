@@ -8,8 +8,8 @@
 {% block heading %}Search{% endblock heading %}
 {% block description %}Look up conditions and anaesthetic drugs{% endblock description %}
 {% block item_loop %}
-<div>
-    <form action="{% url 'search' %}" method='get' class='d-flex'>
+<div class=''>
+    <form action="{% url 'search' %}" method='get' class='d-flex align-items-top'>
         <div class="input-group mb-3">
             <input autofocus type="search" class="form-control" name='q' id='autocompleteInput'
                 placeholder="{% if request.GET.q %}{{ request.GET.q }}{% else %}Condition or drug{% endif %}">
