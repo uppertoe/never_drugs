@@ -1,3 +1,4 @@
+// Toggle navigation .active
 let navlinks = document.querySelectorAll('.nav-link');
 
 navlinks.forEach((link) => {
@@ -8,3 +9,7 @@ navlinks.forEach((link) => {
       link.classList.toggle("active");
     });
   });
+
+  // Enable popovers
+  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))

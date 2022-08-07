@@ -11,7 +11,7 @@
 <div>
     <form action="{% url 'search' %}" method='get' class='d-flex'>
         <div class="input-group mb-3">
-            <input type="search" class="form-control" name='q' id='autocompleteInput'
+            <input autofocus type="search" class="form-control" name='q' id='autocompleteInput'
                 placeholder="{% if request.GET.q %}{{ request.GET.q }}{% else %}Condition or drug{% endif %}">
             <button class="btn btn-outline-success" type='submit'>Search</button>
         </div>
