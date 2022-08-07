@@ -5,11 +5,15 @@ navlinks.forEach((link) => {
     // Add a click event on each link
     link.addEventListener("click", () => {
       let currActive = document.querySelector(".active");
-      currActive.classList.toggle("active");
+      if (currActive) {
+        currActive.classList.toggle("active");
+      }
       link.classList.toggle("active");
     });
   });
 
   // Enable popovers
   const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl), {
+    container: 'body'
+  })
