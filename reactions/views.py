@@ -5,6 +5,7 @@ from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils.html import escape
 from itertools import chain
 
+from .forms import TicketForm
 from .models import Drug, Condition, Interaction
 
 # Create your views here.
@@ -64,10 +65,12 @@ def SearchView(request, **kwargs):
         .filter(Q(name__icontains=query) | Q(aliases__icontains=query))
         .exclude(ready_to_publish=False)
         .prefetch_related('interactions'))
+        form = TicketForm(initial={'condition': query})
         context = {
             'results': chain(drugs,conditions), #combine querysets from both models
             'query': query,
-            'offer_to_add': False if drugs.exists() | conditions.exists() else True,}
+            'offer_to_add': False if drugs.exists() | conditions.exists() else True,
+            'ticket_form': form,}
         return render(request, 'reactions/search.html', context)
     return render(request, 'reactions/search.html') # template {% if %} to catch empty context
 

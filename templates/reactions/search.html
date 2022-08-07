@@ -44,7 +44,20 @@
 </div>
 {% endif %}
 {% if offer_to_add %}
-<p>Would you like to add this?</p>
+{% load crispy_forms_tags %}
+<button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#ticket-form"
+    aria-expanded="false" aria-controls="ticket-form">
+    Recommend for inclusion in database?
+</button>
+<div class="collapse py-3" id="ticket-form">
+    <div class="p-4 p-md-5 border rounded-3 bg-light">
+        <form method="post">
+            {% csrf_token %}
+            {{ ticket_form | crispy }}
+        </form>
+        <button class="w-100 btn btn-lg btn-primary">Submit</button>
+    </div>
+</div>
 {% endif %}
 {% endblock item_loop %}
 {% block javascript %}

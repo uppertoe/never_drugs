@@ -3,9 +3,11 @@ version: "3.9"
 services:
   web:
     build: .
-    command: gunicorn core.wsgi --workers 2 -b 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000 #gunicorn core.wsgi --workers 2 -b 0.0.0.0:8000
     volumes:
       - .:/code
+      - static_volume:/code/staticfiles/
+      - media_volume:/code/media
     ports:
       - 8000:8000
     depends_on:
@@ -34,3 +36,5 @@ services:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
