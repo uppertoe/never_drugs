@@ -3,45 +3,16 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import now, timedelta
-from django.http import JsonResponse
 
+from core.utilities import JsonableResponseMixin
 from .models import Ticket
 
 # Create your views here.
-class JsonableResponseMixin:
-    """
-    Mixin to add JSON support to a form.
-    Must be used with an object-based FormView (e.g. CreateView)
-    """
-    def form_invalid(self, form):
-        response = super().form_invalid(form)
-        is_ajax = self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-        if not is_ajax:
-            return response
-        else:
-            return JsonResponse(form.errors, status=400)
-
-    def form_valid(self, form):
-        # We make sure to call the parent's form_valid() method because
-        # it might do some processing (in the case of CreateView, it will
-        # call form.save() for example).
-        response = super().form_valid(form)
-        is_ajax = self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-        if not is_ajax:
-            return response
-        else:
-            print('AJAX')
-            data = {
-                'pk': self.object.pk,
-            }
-            return JsonResponse(data)
-
-
 class TicketListView(LoginRequiredMixin, ListView):
     context_object_name = 'ticket_list'
     template_name = 'tickets/ticket_list.html'
 
-    def get_querset(self):
+    def get_queryset(self):
         '''Show superusers all (non-actioned) Tickets, and logged-in users their own Tickets'''
         if self.request.user.is_superuser:
             return Ticket.objects.filter(actioned=False)
@@ -55,8 +26,7 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
 
 class TicketCreateView(JsonableResponseMixin, CreateView):
     model = Ticket
-    fields = 'condition', 'drugs', 'description'
-    is_ajax = False
+    fields = 'name', 'description'
 
     def form_valid(self, form):
         if self.request.user.is_authenticated:
@@ -65,7 +35,8 @@ class TicketCreateView(JsonableResponseMixin, CreateView):
 
 class TicketUpdateView(UpdateView):
     model = Ticket
-    fields = 'condition', 'drugs', 'description'
+    fields = 'name', 'description'
+
 
     def get_context_data(self, **kwargs):
         '''

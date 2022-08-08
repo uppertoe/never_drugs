@@ -65,7 +65,7 @@ def SearchView(request, **kwargs):
         .filter(Q(name__icontains=query) | Q(aliases__icontains=query))
         .exclude(ready_to_publish=False)
         .prefetch_related('interactions'))
-        form = TicketForm(initial={'condition': query})
+        form = TicketForm(initial={'name': query})
         context = {
             'results': chain(drugs,conditions), #combine querysets from both models
             'query': query,

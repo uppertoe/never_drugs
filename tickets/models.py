@@ -9,8 +9,7 @@ class Ticket(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    condition = models.CharField(max_length=255)
-    drugs = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255, verbose_name="Condition or drug to add")
     description = models.TextField(max_length=1023, blank=True)
     admin_notes = models.TextField(max_length=1023, blank=True)
     actioned = models.BooleanField(default=False)
@@ -30,4 +29,4 @@ class Ticket(models.Model):
         return reverse('ticket-update', kwargs={'pk': self.id})
 
     def __str__(self):
-        return self.condition
+        return self.name
