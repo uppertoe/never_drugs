@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -31,12 +32,16 @@ class TicketCreateView(JsonableResponseMixin, CreateView):
     def form_valid(self, form):
         if self.request.user.is_authenticated:
             form.instance.created_by = self.request.user
-        return super().form_valid(form)
+            response = super().form_valid(form)
+        else:
+            response = super().form_valid(form)
+            # Store (serializable) UUID as string in session['ticket'] dictionary
+            self.request.session['ticket'] = self.request.session.get('ticket', []) + [str(self.object.pk)]
+        return response
 
 class TicketUpdateView(UpdateView):
     model = Ticket
     fields = 'name', 'description'
-
 
     def get_context_data(self, **kwargs):
         '''

@@ -4,8 +4,8 @@ from .models import Ticket
 
 # Register your models here.
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('name', 'actioned')
-    list_editable = ('actioned',)
+    list_display = ('name', 'created_by', 'actioned', 'for_review')
+    list_editable = ('actioned', 'for_review')
     list_filter = ('actioned', 'created_by', 'last_edited_by')
     search_fields = ('name',)
     readonly_fields = ('name', 'created_by', 'last_edited_by')

@@ -59,14 +59,19 @@
                     type='submit' id='btn-ticket-submit'>Submit</button>
             </fieldset>
         </form>
-
+        <div class="pt-4">
+            <small class="text-muted"><a href="{% url 'account_login' %}" class="text-decoration-none">Login</a> or <a
+                    href="{% url 'account_signup' %}" class="text-decoration-none">sign up</a> to review your
+                submissions
+                later</small>
+        </div>
     </div>
 </div>
 {% endif %}
 {% endblock item_loop %}
 {% block javascript %}
 <script>
-    const autocomplete_url = "{% url 'list-contents' %}";
+    const autocomplete_url = " {% url 'list-contents' %}";
     const ticket_url = "{% url 'ticket-create' %}";
 </script>
 <script src='{% static 'js/ticket.js' %}'></script>
