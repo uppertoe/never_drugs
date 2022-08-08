@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -9,6 +8,35 @@ from django.http import JsonResponse
 from .models import Ticket
 
 # Create your views here.
+class JsonableResponseMixin:
+    """
+    Mixin to add JSON support to a form.
+    Must be used with an object-based FormView (e.g. CreateView)
+    """
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        is_ajax = self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+        if not is_ajax:
+            return response
+        else:
+            return JsonResponse(form.errors, status=400)
+
+    def form_valid(self, form):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        response = super().form_valid(form)
+        is_ajax = self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+        if not is_ajax:
+            return response
+        else:
+            print('AJAX')
+            data = {
+                'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+
+
 class TicketListView(LoginRequiredMixin, ListView):
     context_object_name = 'ticket_list'
     template_name = 'tickets/ticket_list.html'
@@ -25,20 +53,15 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'ticket'
     template_name = 'tickets/ticket_detail.html'
 
-class TicketCreateView(CreateView):
+class TicketCreateView(JsonableResponseMixin, CreateView):
     model = Ticket
     fields = 'condition', 'drugs', 'description'
+    is_ajax = False
 
     def form_valid(self, form):
         if self.request.user.is_authenticated:
             form.instance.created_by = self.request.user
         return super().form_valid(form)
-
-    def post(self, request, *args, **kwargs):
-        is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-        if is_ajax:
-            return JsonResponse({'result': 'submitted'})
-        return super().post(request, *args, **kwargs)
 
 class TicketUpdateView(UpdateView):
     model = Ticket
