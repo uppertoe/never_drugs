@@ -2,13 +2,13 @@
 
 {% block content %}
 <div class="container px-4 py-5">
-    <div class="row align-items-top d-flex p-4 p-md-2 ">
+    <div class="row align-items-top d-flex p-4 p-md-2">
         <div class="col-md-4 pb-md-5">
             <h1 class="display-5 fw-bold lh-1 mb-3 text-break">{% block heading %}{% endblock heading %}</h1>
             {% block subheading %}{% endblock subheading %}
             <p class="lead">{% block description %}{% endblock description %}</p>
         </div>
-        <div class="list-group col-md-8 p-md-4">
+        <div class="col-md-8 p-md-4">
             {% block item_loop %}
             {% endblock item_loop %}
         </div>

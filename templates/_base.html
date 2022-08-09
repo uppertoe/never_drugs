@@ -42,15 +42,23 @@
                         <a class="nav-link{% if request.resolver_match.url_name == 'condition_list' or request.resolver_match.url_name == 'condition_detail' %} active{% endif %}"
                             href="{% url 'condition_list' %}">Conditions</a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link{% if request.resolver_match.url_name == 'ticket-list' %} active{% endif %}"
+                            href="{% url 'ticket-list' %}">Tickets</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'about' %} active{% endif %}"
                             href="{% url 'about' %}">About</a>
                     </li>
                     {% if user.is_authenticated %}
+                    {% if user.is_superuser%}
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'admin:index' %} active{% endif %}"
                             href="{% url 'admin:index' %}">Admin</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link{% if request.resolver_match.url_name == 'account_logout' %} active{% endif %}"
                             href="{% url 'account_logout' %}">Log Out</a>

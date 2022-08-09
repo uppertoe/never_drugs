@@ -1,1 +1,73 @@
-{% extends '_base.html' %}
+{% extends 'tickets/_item_dropdown.html' %}
+{% load static %}
+
+{% block heading %}Tickets{% endblock heading %}
+{% block subheading %}{% endblock subheading %}
+{% block description %}
+Review your submissions for inclusion into the database
+{% if user.is_authenticated %}
+<div class="p-4 p-md-5 d-flex justify-content-center">
+    <div class="btn-group" role="group" aria-label="Toggle between showing own and all tickets">
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio-self" autocomplete="off" checked>
+        <label class="btn btn-outline-primary" for="btnradio-self">Own tickets</label>
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio-all" autocomplete="off">
+        <label class="btn btn-outline-primary" for="btnradio-all">All tickets</label>
+    </div>
+</div>
+{% endif %}
+{% endblock description %}
+
+{% block item_loop %}
+<div class="collapse.show" id="self-tickets">
+    <div class="accordion" id="accordion-self-tickets">
+        {% for ticket in ticket_list %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ ticket.id }}">
+                <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapse{{ ticket.id }}" aria-expanded="false"
+                    aria-controls="collapse{{ ticket.id }}">
+                    {% if ticket.actioned %}<img src="{% static 'images/clipboard2-check.svg' %}" alt="actioned"
+                        class="px-2">
+                    {% else %}<img src="{% static 'images/clipboard2.svg' %}" alt="actioned" class="px-2">
+                    {% endif %}
+                    {{ ticket.name }}
+                </button>
+            </h2>
+            <div id=" collapse{{ ticket.id }}" class="accordion-collapse collapse"
+                aria-labelledby="heading{{ ticket.id }}" data-bs-parent="#accordion-self-tickets">
+                <div class="accordion-body">
+                    {{ ticket.description }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% if all_tickets %}
+<div class="collapse" id="all-tickets">
+    <div class="accordion" id="accordion-all-tickets">
+        {% for ticket in all_tickets %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ ticket.id }}">
+                <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapse{{ ticket.id }}" aria-expanded="false"
+                    aria-controls="collapse{{ ticket.id }}">
+                    {{ ticket.name }}{% if ticket.created_by %}<small class="text-muted px-2"> -
+                        {{ticket.created_by.username}}</small>{% endif %} </button> </h2>
+            <div id="collapse{{ ticket.id }}" class="accordion-collapse collapse"
+                aria-labelledby="heading{{ ticket.id }}" data-bs-parent="#accordion-all-tickets">
+                <div class="accordion-body">
+                    {{ ticket.description }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock item_loop %}
+
+{% block javascript %}
+<script src='{% static 'js/ticket_list.js' %}'></script>
+{% endblock javascript %}

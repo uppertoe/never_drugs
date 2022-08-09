@@ -59,12 +59,19 @@
                     type='submit' id='btn-ticket-submit'>Submit</button>
             </fieldset>
         </form>
+        {% if user.is_authenticated %}
+        <div class="pt-4">
+            <small class="text-muted"><a href="{% url 'ticket-list' %}" class="text-decoration-none">Review</a> your
+                previous submissions</small>
+        </div>
+        {% else %}
         <div class="pt-4">
             <small class="text-muted"><a href="{% url 'account_login' %}" class="text-decoration-none">Login</a> or <a
                     href="{% url 'account_signup' %}" class="text-decoration-none">sign up</a> to review your
                 submissions
                 later</small>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endif %}

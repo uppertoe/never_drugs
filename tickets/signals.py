@@ -18,3 +18,4 @@ def attach_user_to_tickets(sender, request, user, **kwargs):
                     instance.save()
             except:
                 print(f'Error attaching {user} to ticket {ticket} on login')
+        del request.session['ticket']

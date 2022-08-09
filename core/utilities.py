@@ -20,7 +20,6 @@ class JsonableResponseMixin:
     Mixin to add JSON support to a form.
     Must be used with an object-based FormView (e.g. CreateView)
     """
-    json_fields = 'pk'
     def form_invalid(self, form):
         response = super().form_invalid(form)
         is_ajax = self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
