@@ -16,6 +16,7 @@ class AbstractSaveAuthorModelAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 class SourceAdmin(AbstractSaveAuthorModelAdmin):
+    list_filter = ('name', 'publication', 'year')
     search_fields = ('name', 'publication')
     list_filter = ('created_by', 'last_edited_by')
     readonly_fields = ('created_by', 'last_edited_by')
@@ -44,7 +45,10 @@ class InteractionAdminForm(ModelForm):
         exclude = ()
     
     def clean(self):
-        #Ensure that the same drug is not recorded in self.drug and self.secondary_drug
+        '''
+        Ensure that the same drug is not recorded in self.drug and self.secondary_drug
+        or self.condition and self.secondary_condition
+        '''
         data = self.cleaned_data
         errors = []
         for secondary_drug in data['secondary_drugs']:
@@ -52,6 +56,11 @@ class InteractionAdminForm(ModelForm):
                 errors.append(ValidationError(
                     _('%(secondary_drug)s cannot be present in both the \'contraindicated drugs\' and \'drugs to use with caution\' lists'),
                     params={'secondary_drug': secondary_drug},))
+        for secondary_condition in data['secondary_conditions']:
+            if secondary_condition in data['conditions']:
+                errors.append(ValidationError(
+                    _('%(secondary_condition)s cannot be present in both the \'strongly linked\' and \'theoretically linked\' condition lists'),
+                    params={'secondary_condition': secondary_condition},))
         if errors: raise ValidationError(errors)
         return data
 
@@ -68,10 +77,6 @@ class InteractionAdmin(AbstractSaveAuthorModelAdmin):
         qs = super().get_queryset(request)
         return qs.prefetch_related('conditions', 'secondary_conditions', 'drugs', 'secondary_drugs', 'sources')
 
-class InteractionInline(admin.StackedInline):
-    model = Interaction.conditions.through # Use intermediate table (for many-many relationship)
-    extra = 1
-
 class ConditionAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'aliases', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
@@ -80,9 +85,6 @@ class ConditionAdmin(AbstractSaveAuthorModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name', 'aliases')
     readonly_fields = ('created_by', 'last_edited_by')
-    inlines = [
-        InteractionInline,
-    ]
 
 admin.site.register(DrugClass, DrugClassAdmin)
 admin.site.register(Drug, DrugAdmin)
