@@ -29,11 +29,11 @@ class DrugDetailView(DetailView):
         # Include related interactions via interactions.drugs related_name
         context['interactions'] = (self.object.interactions.all()
         .exclude(ready_to_publish=False)
-        .prefetch_related('conditions',))
+        .prefetch_related('conditions', 'secondary_conditions'))
         # Include related interactions via interactions.secondary_drugs related_name
-        context['secondary_interactions'] = (self.object.secondary_interactions.all()
+        context['secondary_interactions'] = (self.object.secondary_drug_interactions.all()
         .exclude(ready_to_publish=False)
-        .prefetch_related('conditions',))
+        .prefetch_related('conditions', 'secondary_conditions'))
         return context
 
 class ConditionDetailView(DetailView):
@@ -46,13 +46,17 @@ class ConditionDetailView(DetailView):
         context['interactions'] = (self.object.interactions.all()
         .exclude(ready_to_publish=False)
         .prefetch_related('drugs', 'secondary_drugs'))
+        # Include related interactions via interactions.secondary_conditions related_name
+        context['secondary_interactions'] = (self.object.secondary_condition_interactions.all()
+        .exclude(ready_to_publish=False)
+        .prefetch_related('drugs', 'secondary_drugs'))
         return context
 
 class InteractionDetailView(DetailView):
     model = Interaction
     context_object_name = 'interaction'
     template_name = 'reactions/interaction_detail.html'
-    queryset = Interaction.objects.all().prefetch_related('drugs', 'secondary_drugs', 'conditions', 'sources')
+    queryset = Interaction.objects.all().prefetch_related('drugs', 'secondary_drugs', 'conditions', 'secondary_conditions', 'sources')
 
 def SearchView(request, **kwargs):
     query = request.GET.get('q')

@@ -15,26 +15,47 @@
 
 {% block item_loop %}
 {% if interactions %}
-{% for interaction in interactions %}
-<a href="{{interaction.get_absolute_url}}" class="list-group-item list-group-item-action d-flex gap-3 py-3"
-    aria-current="true">
-    <img src="{% static 'images/prescription.svg' %}" alt="clipboard" width="32" height="32" class=" flex-shrink-0">
-    <div class="d-flex gap-2 w-100 justify-content-between">
-        <div>
-            <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
-            {% for drug in interaction.drugs.all %}
-            <p class="mb-0 opacity-75">{{drug.name | capfirst}}</p>
-            {% endfor %}
-            <small class="opacity-50 text-nowrap">{{condition.date_modified}}</small>
-        </div>
+<h6 class="text-muted">Strongly associated with:</h6>
+<div class="list-group">
+    {% for interaction in interactions %}
+    <a href="{{interaction.get_absolute_url}}"
+        class="list-group-item list-group-item-action list-group-item-primary d-flex gap-3 py-3" aria-current="true">
+        <img src="{% static 'images/prescription.svg' %}" alt="clipboard" width="32" height="32" class=" flex-shrink-0">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
+                {% for drug in interaction.drugs.all %}
+                <p class="mb-0 opacity-75">{{drug.name | capfirst}}</p>
+                {% endfor %}
+                <small class="opacity-50 text-nowrap">{{condition.date_modified}}</small>
+            </div>
 
-    </div>
-</a>
-{% endfor %}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+{% if secondary_interactions %}
+<h6 class="text-muted">Theoretical association with:</h6>
+<div class="list-group">
+    {% for interaction in secondary_interactions %}
+    <a href="{{interaction.get_absolute_url}}"
+        class="list-group-item list-group-item-action list-group-item-secondary d-flex gap-3 py-3" aria-current="true">
+        <img src="{% static 'images/prescription.svg' %}" alt="clipboard" width="32" height="32" class=" flex-shrink-0">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
+                {% for drug in interaction.drugs.all %}
+                <p class="mb-0 opacity-75">{{drug.name | capfirst}}</p>
+                {% endfor %}
+                <small class="opacity-50 text-nowrap">{{condition.date_modified}}</small>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
 {% endif %}
 {% if condition.sources.all %}
-
-<h6 class="text-muted"></h6>
 <button class="btn btn-outline-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#source-list"
     aria-expanded="false" aria-controls="source-list">
     View references
@@ -57,7 +78,6 @@
         </div>
         {% endfor %}
     </div>
-</div>
 </div>
 {% endif %}
 {% endblock item_loop %}
