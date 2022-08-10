@@ -11,6 +11,7 @@ class Source(models.Model):
     name = models.CharField(max_length=255, blank=False, verbose_name='Article title')
     publication = models.CharField(max_length=255, blank=False, verbose_name='Journal or publication name')
     reference = models.TextField(max_length=1023, blank=True, verbose_name='Full reference')
+    year = models.IntegerField(blank=True, null=True, verbose_name='Year of publication')
     url = models.URLField(max_length=200, blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,

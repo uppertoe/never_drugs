@@ -76,6 +76,7 @@ class ConditionAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'aliases', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
     list_filter = ('created_by', 'last_edited_by')
+    filter_horizontal = ('sources',)
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name', 'aliases')
     readonly_fields = ('created_by', 'last_edited_by')

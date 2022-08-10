@@ -8,7 +8,8 @@
 <small class="text-muted">Also known as: {{ condition.aliases }}</small>
 {% endif %}
 {% if condition.description %}
-<p class="col-lg-10 fs-4">Description: {{ condition.description }}</p>
+<p class="col-lg-10 fs-4">Description:</p>
+<p>{{ condition.description }}</p>
 {% endif %}
 {% endblock subheading %}
 
@@ -33,15 +34,17 @@
 {% endif %}
 {% if condition.sources.all %}
 <div class="p-4 p-md-5 border rounded-3 bg-light">
-    <hr class="my-4">
     <h6 class="text-muted">References</h6>
     {% for source in condition.sources.all %}
     <div class="mb-1">
-        <small class="text-muted">{{ source.name }}</small>
-        {% if source.publication %}<small class="text-muted">Published in {{ source.name }}</small>{% endif %}
-        {% if source.url %}<small class="text-muted"><a href="{{source.url}}">{{source.url}}</a></small>{% endif %}
+        <p><small>{{ source.name }}</small></p>
+        {% if source.publication %}<p><small class="text-muted">Published in :{{ source.publication }}</small></p>
+        {% endif %}
+        {% if source.year %}<p><small class="text-muted">{{ source.year }}</small></p>{% endif %}
+        {% if source.url %}<p><small class="text-muted"><a href="{{source.url}}">{{source.url}}</a></small></p>
+        {% endif %}
     </div>
+    {% endfor %}
 </div>
-{% endfor %}
 {% endif %}
 {% endblock item_loop %}

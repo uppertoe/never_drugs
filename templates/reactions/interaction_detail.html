@@ -48,10 +48,12 @@
                 <h6 class="text-muted">References</h6>
                 {% for source in interaction.sources.all %}
                 <div class="mb-1">
-                    <small class="text-muted">{{ source }}</small>
-                    {% if source.url %}
-                    <small class="text-muted"><a href="{{source.url}}">{{source.url}}</a></small>
-                    {% endif %}
+                    <p><small>{{ source.name }}</small></p>
+                    {% if source.publication %}<p><small class="text-muted">Published in:
+                            {{ source.publication }}</small></p>{% endif %}
+                    {% if source.year %}<p><small class="text-muted">{{ source.year }}</small></p>{% endif %}
+                    {% if source.url %}<p><small class="text-muted"><a href="{{source.url}}">{{source.url}}</a></small>
+                    </p>{% endif %}
                 </div>
                 {% endfor %}
                 {% endif %}
