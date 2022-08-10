@@ -33,31 +33,31 @@
 {% endfor %}
 {% endif %}
 {% if condition.sources.all %}
-<div class="p-4 p-md-5 m-4 border rounded-3 bg-light">
-    <h6 class="text-muted"></h6>
-    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#source-list"
-        aria-expanded="false" aria-controls="source-list">
-        View references
-    </button>
-    <div class="collapse" id="source-list">
-        <div class="row">
-            {% for source in condition.sources.all %}
-            <div class="col-lg-6">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ source.name }}</h5>
-                        <p class="card-text">
-                            {{ source.publication }}
-                            {% if source.year %}<small class='text-muted'>{{ source.year }}</small>{% endif %}
-                        </p>
-                        {% if source.url %}<a href="{{source.url}}"
-                            class="text-decoration-none">{{ source.url }}</a>{% endif %}
-                    </div>
+
+<h6 class="text-muted"></h6>
+<button class="btn btn-outline-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#source-list"
+    aria-expanded="false" aria-controls="source-list">
+    View references
+</button>
+<div class="collapse" id="source-list">
+    <div class="row">
+        {% for source in condition.sources.all %}
+        <div class="col-12">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ source.name }}</h5>
+                    <p class="card-text">
+                        {{ source.publication }}
+                        {% if source.year %}<small class='text-muted'>{{ source.year }}</small>{% endif %}
+                    </p>
+                    {% if source.url %}<a href="{{source.url}}"
+                        class="text-decoration-none">{{ source.url }}</a>{% endif %}
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
+</div>
 </div>
 {% endif %}
 {% endblock item_loop %}
