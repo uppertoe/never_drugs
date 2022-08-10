@@ -45,17 +45,31 @@
                 </div>
                 {% if interaction.sources.all %}
                 <hr class="my-4">
-                <h6 class="text-muted">References</h6>
-                {% for source in interaction.sources.all %}
-                <div class="mb-1">
-                    <p><small>{{ source.name }}</small></p>
-                    {% if source.publication %}<p><small class="text-muted">Published in:
-                            {{ source.publication }}</small></p>{% endif %}
-                    {% if source.year %}<p><small class="text-muted">{{ source.year }}</small></p>{% endif %}
-                    {% if source.url %}<p><small class="text-muted"><a href="{{source.url}}">{{source.url}}</a></small>
-                    </p>{% endif %}
+                <h6 class="text-muted"></h6>
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#source-list" aria-expanded="false" aria-controls="source-list">
+                    View references
+                </button>
+                <div class="collapse" id="source-list">
+                    <div class="row">
+                        {% for source in interaction.sources.all %}
+                        <div class="col-lg-6">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ source.name }}</h5>
+                                    <p class="card-text">
+                                        {{ source.publication }}
+                                        {% if source.year %}<small
+                                            class='text-muted'>{{ source.year }}</small>{% endif %}
+                                    </p>
+                                    {% if source.url %}<a href="{{source.url}}"
+                                        class="text-decoration-none">{{ source.url }}</a>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-                {% endfor %}
                 {% endif %}
             </div>
         </div>
