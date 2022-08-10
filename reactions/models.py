@@ -24,7 +24,7 @@ class Source(models.Model):
         related_name = 'source_edited_by')
 
     def __str__(self):
-        return f'{self.name[:30]} in {self.publication[:30]}'
+        return f'{self.name} in {self.publication}'
 
 class DrugClass(models.Model):
     name = models.CharField(max_length=255)
@@ -80,6 +80,7 @@ class Condition(models.Model):
     aliases = models.CharField(max_length=1023, blank=True)
     slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
     description = models.TextField(max_length=1023, blank=True)
+    sources = models.ManyToManyField(Source, related_name='condition_sources', blank=True)
     ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?') # False excludes from search
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -137,9 +138,10 @@ class Interaction(models.Model):
         default=uuid.uuid4,
         editable=False)
     name = models.CharField(max_length=255, blank=False)
-    conditions = models.ManyToManyField(Condition, related_name='interactions')
+    conditions = models.ManyToManyField(Condition, related_name='interactions', verbose_name="Conditions strongly linked with the interaction")
+    secondary_conditions = models.ManyToManyField(Condition, related_name='secondary_condition_interactions', verbose_name='Conditions with a theoretical link to the interaction', blank=True)
     drugs = models.ManyToManyField(Drug, related_name='interactions', verbose_name='Contraindicated drugs', blank=True)
-    secondary_drugs = models.ManyToManyField(Drug, related_name='secondary_interactions', verbose_name='Drugs to use with caution', blank=True)
+    secondary_drugs = models.ManyToManyField(Drug, related_name='secondary_drug_interactions', verbose_name='Drugs to use with caution', blank=True)
     description = models.TextField(blank=True)
     severity = models.CharField(
         max_length=2,
@@ -149,7 +151,7 @@ class Interaction(models.Model):
         max_length=2,
         choices=evidence_choices,
         default=L7)
-    sources = models.ManyToManyField(Source, related_name='sources', blank=True)
+    sources = models.ManyToManyField(Source, related_name='interaction_sources', blank=True)
     ready_to_publish = models.BooleanField(default=False, verbose_name='Ready to publish?') # False excludes from search
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -174,6 +176,9 @@ class Interaction(models.Model):
 
     def get_condition_string(self):
         return ', '.join([condition.name for condition in self.conditions.all()])
+
+    def get_secondary_condition_string(self):
+        return ', '.join([condition.name for condition in self.secondary_conditions.all()])
     
     @admin.display(description='Drugs')
     def get_drug_list(self): # Allow many-many relationship query for admin list_display

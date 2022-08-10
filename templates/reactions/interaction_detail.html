@@ -27,10 +27,18 @@
         </div>
         <div class="px-md-4 col-md-6 col-lg-8">
             <div class="p-4 p-md-5 border rounded-3 bg-light">
+                {% if interaction.conditions.all %}
                 <div class="mb-3">
                     <h4>Susceptible conditions:</h4>
                     <p>{{ interaction.get_condition_string | capfirst }}</p>
                 </div>
+                {% endif %}
+                {% if interaction.secondary_conditions.all %}
+                <div class="mb-3">
+                    <h4>Theoretically associated conditions:</h4>
+                    <p>{{ interaction.get_secondary_condition_string | capfirst }}</p>
+                </div>
+                {% endif %}
                 <div class="mb-3">
                     <h4>Description:</h4>
                     <p>{{ interaction.description | linebreaks }}</p>

@@ -60,13 +60,13 @@ class InteractionAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'get_condition_list', 'get_drug_list', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
     list_filter = ('created_by', 'last_edited_by')
-    filter_horizontal = ('conditions', 'drugs', 'secondary_drugs', 'sources')
+    filter_horizontal = ('conditions', 'secondary_conditions', 'drugs', 'secondary_drugs', 'sources')
     search_fields = ('name',)
     readonly_fields = ('created_by', 'last_edited_by')
 
     def get_queryset(self, request): # Prefetch many-many query
         qs = super().get_queryset(request)
-        return qs.prefetch_related('conditions', 'drugs', 'sources')
+        return qs.prefetch_related('conditions', 'secondary_conditions', 'drugs', 'secondary_drugs', 'sources')
 
 class InteractionInline(admin.StackedInline):
     model = Interaction.conditions.through # Use intermediate table (for many-many relationship)

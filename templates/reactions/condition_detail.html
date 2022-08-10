@@ -31,4 +31,17 @@
 </a>
 {% endfor %}
 {% endif %}
+{% if condition.sources.all %}
+<div class="p-4 p-md-5 border rounded-3 bg-light">
+    <hr class="my-4">
+    <h6 class="text-muted">References</h6>
+    {% for source in condition.sources.all %}
+    <div class="mb-1">
+        <small class="text-muted">{{ source.name }}</small>
+        {% if source.publication %}<small class="text-muted">Published in {{ source.name }}</small>{% endif %}
+        {% if source.url %}<small class="text-muted"><a href="{{source.url}}">{{source.url}}</a></small>{% endif %}
+    </div>
+</div>
+{% endfor %}
+{% endif %}
 {% endblock item_loop %}
