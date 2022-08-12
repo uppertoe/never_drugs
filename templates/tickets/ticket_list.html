@@ -5,7 +5,7 @@
 {% block subheading %}{% endblock subheading %}
 {% block description %}
 Review your submissions for inclusion into the database
-{% if user.is_authenticated %}
+{% if user.is_superuser %}
 <div class="p-4 p-md-5 d-flex justify-content-center">
     <div class="btn-group" role="group" aria-label="Toggle between showing own and all tickets">
         <input type="radio" class="btn-check" name="btnradio" id="btnradio-self" autocomplete="off" checked>

@@ -10,6 +10,7 @@ services:
       - media_volume:/code/media
     ports:
       - 8000:8000
+      - 3000:3000 # for debugpy
     depends_on:
     - db
     environment:
