@@ -41,7 +41,7 @@
                 {% endif %}
                 <div class="mb-3">
                     <h4>Description:</h4>
-                    <p>{{ interaction.description | linebreaks }}</p>
+                    <p>{{ interaction.description_markdown|safe }}</p>
                 </div>
                 {% if interaction.sources.all %}
                 <hr class="my-4">

@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils.html import escape
 from itertools import chain
+from markdownx.utils import markdownify
 
 from .forms import TicketForm
 from .models import Drug, Condition, Interaction
@@ -57,6 +58,10 @@ class InteractionDetailView(DetailView):
     context_object_name = 'interaction'
     template_name = 'reactions/interaction_detail.html'
     queryset = Interaction.objects.all().prefetch_related('drugs', 'secondary_drugs', 'conditions', 'secondary_conditions', 'sources')
+
+    @property
+    def description_markdown(self):
+        return markdownify(self.description)
 
 def SearchView(request, **kwargs):
     query = request.GET.get('q')

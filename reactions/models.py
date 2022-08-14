@@ -5,6 +5,9 @@ from django.urls import reverse
 from django.contrib import admin
 from django.utils.text import slugify
 from django.conf import settings
+from django.utils.html import format_html
+from markdownx.models import MarkdownxField
+from markdownx.utils import markdownify
 
 # Create your models here.
 class Source(models.Model):
@@ -133,6 +136,12 @@ class Interaction(models.Model):
         (L5, 'Reviews of qualitative studies'),
         (L6, 'Single qualitative study'),
         (L7, 'Expert body opinion'),]
+
+    # Link for Markdown field helptext
+    markdown_field_helptext = "Add basic formatting using "
+    markdown_link = "https://www.markdownguide.org/cheat-sheet/"
+    markdown_link_text = "Markdown (cheat sheet)"
+    markdown_field_post_helptext = "A live preview of formatted content is shown next to the input field"
     
     id = models.UUIDField(
         primary_key=True,
@@ -143,7 +152,14 @@ class Interaction(models.Model):
     secondary_conditions = models.ManyToManyField(Condition, related_name='secondary_condition_interactions', verbose_name='Conditions with a theoretical link to the interaction', blank=True)
     drugs = models.ManyToManyField(Drug, related_name='interactions', verbose_name='Contraindicated drugs', blank=True)
     secondary_drugs = models.ManyToManyField(Drug, related_name='secondary_drug_interactions', verbose_name='Drugs to use with caution', blank=True)
-    description = models.TextField(blank=True)
+    description = MarkdownxField(
+        help_text=format_html(
+            '{}<a href="{}" target="_blank" rel="noopener noreferrer">{}</a><br>{}',
+            markdown_field_helptext,
+            markdown_link,
+            markdown_link_text,
+            markdown_field_post_helptext)
+    )
     severity = models.CharField(
         max_length=2,
         choices=severity_choices,
@@ -166,6 +182,9 @@ class Interaction(models.Model):
         on_delete=models.CASCADE,
         null=True,
         related_name = 'interaction_edited_by')
+
+    def description_markdown(self):
+        return markdownify(self.description)
 
     def get_bootstrap_alert_colour(self): # chooses bootstrap alert colour based on interaction.severity
         severity_alert_dict = { 

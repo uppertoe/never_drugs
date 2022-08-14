@@ -24,6 +24,8 @@ urlpatterns = [
     path('database/', admin.site.urls, name='admin'),
     # User management
     path('accounts/', include('allauth.urls')),
+    # Markdownx
+    path('markdownx/', include('markdownx.urls')),
     # Local apps
     path('tickets/', include('tickets.urls')),
     path('', include('pages.urls')),

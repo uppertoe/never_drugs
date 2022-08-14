@@ -48,12 +48,14 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.forms', # Required for overriding Markdownx widget.html
     # Third-party
     'crispy_forms',
     'crispy_bootstrap5',
     'allauth',
     'allauth.account',
     'debug_toolbar',
+    'markdownx',
     # Local
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig',
@@ -172,3 +174,6 @@ ACCOUNT_UNIQUE_EMAIL = True
 import socket
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + '1' for ip in ips]
+
+# Markdownx
+FORM_RENDERER='django.forms.renderers.TemplatesSetting' 
