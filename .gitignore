@@ -4,3 +4,4 @@ db.sqlite3
 .DS_Store # Mac only
 docker-compose-prod.yml
 .vscode
+development.txt

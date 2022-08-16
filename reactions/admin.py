@@ -2,18 +2,22 @@ from django.contrib import admin
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from markdownx.admin import MarkdownxModelAdmin
 
 from .models import DrugClass, Drug, Condition, Interaction, Source
 
-# Register your models here.
 
 class AbstractSaveAuthorModelAdmin(admin.ModelAdmin):
-    '''Overrides save_model to set created_by and last_edited_by fields to request.user'''
-    
+    '''
+    Overrides save_model to set created_by
+    and last_edited_by fields to request.user
+    '''
     def save_model(self, request, obj, form, change):
-        if obj.created_by == None: obj.created_by = request.user
+        if obj.created_by is None:
+            obj.created_by = request.user
         obj.last_edited_by = request.user
         super().save_model(request, obj, form, change)
+
 
 class SourceAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'publication', 'year')
@@ -21,10 +25,12 @@ class SourceAdmin(AbstractSaveAuthorModelAdmin):
     list_filter = ('created_by', 'last_edited_by')
     readonly_fields = ('created_by', 'last_edited_by')
 
+
 class DrugClassAdmin(AbstractSaveAuthorModelAdmin):
     search_fields = ('name',)
     list_filter = ('created_by', 'last_edited_by')
     readonly_fields = ('created_by', 'last_edited_by')
+
 
 class DrugAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'aliases', 'get_drug_classes')
@@ -34,46 +40,76 @@ class DrugAdmin(AbstractSaveAuthorModelAdmin):
     search_fields = ('name',)
     readonly_fields = ('created_by', 'last_edited_by')
 
-    def get_queryset(self, request): # Prefetch many-many query
+    def get_queryset(self, request):  # Prefetch many-many query
         qs = super().get_queryset(request)
         return qs.prefetch_related('drug_class')
+
 
 class InteractionAdminForm(ModelForm):
     '''Implement validation for the InteractionAdmin'''
     class Meta():
         model = Interaction
         exclude = ()
-    
+
     def clean(self):
         data = self.cleaned_data
         errors = []
-        # Ensure that the same drug is not recorded in self.drug and self.secondary_drug
+        # Ensure that the same drug is not recorded in
+        # self.drug and self.secondary_drug
         for secondary_drug in data['secondary_drugs']:
             if secondary_drug in data['drugs']:
                 errors.append(ValidationError(
-                    _('%(secondary_drug)s cannot be present in both the \'contraindicated drugs\' and \'drugs to use with caution\' lists'),
+                    _('%(secondary_drug)s cannot be present in both \
+                        the \'contraindicated drugs\' and \'drugs to \
+                            use with caution\' lists'),
                     params={'secondary_drug': secondary_drug},))
         # Or self.condition and self.secondary_condition
         for secondary_condition in data['secondary_conditions']:
             if secondary_condition in data['conditions']:
                 errors.append(ValidationError(
-                    _('%(secondary_condition)s cannot be present in both the \'strongly linked\' and \'theoretically linked\' condition lists'),
+                    _('%(secondary_condition)s cannot be present in both \
+                        the \'strongly linked\' and \'theoretically linked\' \
+                            condition lists'),
                     params={'secondary_condition': secondary_condition},))
-        if errors: raise ValidationError(errors)
+        if errors:
+            raise ValidationError(errors)
         return data
 
-class InteractionAdmin(AbstractSaveAuthorModelAdmin):
-    form = InteractionAdminForm
-    list_display = ('name', 'get_condition_list', 'get_drug_list', 'ready_to_publish')
-    list_editable = ('ready_to_publish',)
-    list_filter = ('created_by', 'last_edited_by')
-    filter_horizontal = ('conditions', 'secondary_conditions', 'drugs', 'secondary_drugs', 'sources')
-    search_fields = ('name',)
-    readonly_fields = ('created_by', 'last_edited_by')
 
-    def get_queryset(self, request): # Prefetch many-many query
+class InteractionAdmin(MarkdownxModelAdmin):
+    form = InteractionAdminForm
+    list_display = (
+        'name',
+        'get_condition_list',
+        'get_drug_list',
+        'ready_to_publish',
+        'ready_for_peer_review')
+    list_editable = ('ready_to_publish', 'ready_for_peer_review')
+    list_filter = ('created_by', 'last_edited_by')
+    filter_horizontal = (
+        'conditions',
+        'secondary_conditions',
+        'drugs',
+        'secondary_drugs',
+        'sources')
+    search_fields = ('name',)
+    readonly_fields = ('created_by', 'last_edited_by', 'peer_review_status')
+
+    def get_queryset(self, request):  # Prefetch many-many query
         qs = super().get_queryset(request)
-        return qs.prefetch_related('conditions', 'secondary_conditions', 'drugs', 'secondary_drugs', 'sources')
+        return qs.prefetch_related(
+            'conditions',
+            'secondary_conditions',
+            'drugs',
+            'secondary_drugs',
+            'sources')
+
+    def save_model(self, request, obj, form, change):
+        if obj.created_by is None:
+            obj.created_by = request.user
+        obj.last_edited_by = request.user
+        super().save_model(request, obj, form, change)
+
 
 class ConditionAdmin(AbstractSaveAuthorModelAdmin):
     list_display = ('name', 'aliases', 'ready_to_publish')
@@ -83,6 +119,7 @@ class ConditionAdmin(AbstractSaveAuthorModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name', 'aliases')
     readonly_fields = ('created_by', 'last_edited_by')
+
 
 admin.site.register(DrugClass, DrugClassAdmin)
 admin.site.register(Drug, DrugAdmin)
