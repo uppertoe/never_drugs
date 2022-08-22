@@ -1,3 +1,15 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Review, ReviewSession
+
+
+class ReviewAdmin(admin.ModelAdmin):
+    pass
+
+
+class ReviewSessionAdmin(admin.ModelAdmin):
+    filter_horizontal = ('interaction_reviews', 'user_list')
+
+
+admin.site.register(Review, ReviewAdmin)
+admin.site.register(ReviewSession, ReviewSessionAdmin)

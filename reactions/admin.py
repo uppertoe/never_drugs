@@ -1,13 +1,12 @@
 from django.contrib import admin
-from django.forms import ModelForm
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+
 from markdownx.admin import MarkdownxModelAdmin
 
 from .models import DrugClass, Drug, Condition, Interaction, Source
+from .forms import InteractionAdminForm
 
 
-class AbstractSaveAuthorModelAdmin(admin.ModelAdmin):
+class SaveAuthorMixin:
     '''
     Overrides save_model to set created_by
     and last_edited_by fields to request.user
@@ -19,20 +18,20 @@ class AbstractSaveAuthorModelAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-class SourceAdmin(AbstractSaveAuthorModelAdmin):
+class SourceAdmin(SaveAuthorMixin, admin.ModelAdmin):
     list_display = ('name', 'publication', 'year')
     search_fields = ('name', 'publication')
     list_filter = ('created_by', 'last_edited_by')
     readonly_fields = ('created_by', 'last_edited_by')
 
 
-class DrugClassAdmin(AbstractSaveAuthorModelAdmin):
+class DrugClassAdmin(SaveAuthorMixin, admin.ModelAdmin):
     search_fields = ('name',)
     list_filter = ('created_by', 'last_edited_by')
     readonly_fields = ('created_by', 'last_edited_by')
 
 
-class DrugAdmin(AbstractSaveAuthorModelAdmin):
+class DrugAdmin(SaveAuthorMixin, admin.ModelAdmin):
     list_display = ('name', 'aliases', 'get_drug_classes')
     list_filter = ('created_by', 'last_edited_by')
     prepopulated_fields = {'slug': ('name',)}
@@ -45,39 +44,8 @@ class DrugAdmin(AbstractSaveAuthorModelAdmin):
         return qs.prefetch_related('drug_class')
 
 
-class InteractionAdminForm(ModelForm):
-    '''Implement validation for the InteractionAdmin'''
-    class Meta():
-        model = Interaction
-        exclude = ()
-
-    def clean(self):
-        data = self.cleaned_data
-        errors = []
-        # Ensure that the same drug is not recorded in
-        # self.drug and self.secondary_drug
-        for secondary_drug in data['secondary_drugs']:
-            if secondary_drug in data['drugs']:
-                errors.append(ValidationError(
-                    _('%(secondary_drug)s cannot be present in both \
-                        the \'contraindicated drugs\' and \'drugs to \
-                            use with caution\' lists'),
-                    params={'secondary_drug': secondary_drug},))
-        # Or self.condition and self.secondary_condition
-        for secondary_condition in data['secondary_conditions']:
-            if secondary_condition in data['conditions']:
-                errors.append(ValidationError(
-                    _('%(secondary_condition)s cannot be present in both \
-                        the \'strongly linked\' and \'theoretically linked\' \
-                            condition lists'),
-                    params={'secondary_condition': secondary_condition},))
-        if errors:
-            raise ValidationError(errors)
-        return data
-
-
-class InteractionAdmin(MarkdownxModelAdmin):
-    form = InteractionAdminForm
+class InteractionAdmin(SaveAuthorMixin, MarkdownxModelAdmin):
+    form = InteractionAdminForm  # Extends field validation
     list_display = (
         'name',
         'get_condition_list',
@@ -104,14 +72,8 @@ class InteractionAdmin(MarkdownxModelAdmin):
             'secondary_drugs',
             'sources')
 
-    def save_model(self, request, obj, form, change):
-        if obj.created_by is None:
-            obj.created_by = request.user
-        obj.last_edited_by = request.user
-        super().save_model(request, obj, form, change)
 
-
-class ConditionAdmin(AbstractSaveAuthorModelAdmin):
+class ConditionAdmin(SaveAuthorMixin, admin.ModelAdmin):
     list_display = ('name', 'aliases', 'ready_to_publish')
     list_editable = ('ready_to_publish',)
     list_filter = ('created_by', 'last_edited_by')

@@ -1,0 +1,33 @@
+{% extends 'review/_split_view.html' %}
+
+{% block left_col %}
+<h1 class="fw-bold lh-1 mb-3 pb-2">Peer Review Meetings</h1>
+<div class="list-group">
+{% for review in session_list %}
+<a href="#" class="list-group-item list-group-item-action">
+    <div class="d-flex justify-content-between">
+        <h5 class="mb-1">Meeting on {{ review.date_created | date:"l j/n/Y" }}</h5>
+        {% if review.interaction_reviews.all %}
+        <span class="badge bg-primary rounded-pill d-flex align-items-center">
+            {{ review.interaction_reviews.all.count }} Article{{ review.interaction_reviews.all.count|pluralize }}
+        </span>
+        {% endif %}
+    </div>
+    {% if review.host %}
+    <p class="mb-1">Session host: {{ review.host.username }}</p>
+    {% endif %}
+    {% if review.user_list.all %}
+        <small class="text-muted">Participant{{ review.user_list.all|pluralize }}: {{ review.user_list_string }}</small>
+    {% endif %}
+</a>
+{% endfor %}
+</div>
+{% endblock left_col %}
+
+{% block right_col %}
+<div class="p-4 p-md-5 border rounded-3">
+    <div class="d-flex align-items-center">
+        <p>Placeholder Content</p>
+    </div>
+</div>
+{% endblock right_col %}

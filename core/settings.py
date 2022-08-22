@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'django.forms', # Required for overriding Markdownx widget.html
+    'django.forms',  # Required for overriding Markdownx widget.html
     # Third-party
     'crispy_forms',
     'crispy_bootstrap5',
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'reactions.apps.ReactionsConfig',
     'tickets.apps.TicketsConfig',
+    'review.apps.ReviewConfig',
 ]
 
 MIDDLEWARE = [

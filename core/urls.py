@@ -30,6 +30,7 @@ urlpatterns = [
     path('tickets/', include('tickets.urls')),
     path('', include('pages.urls')),
     path('', include('reactions.urls')),
+    path('peer-review/', include('review.urls')),
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )
@@ -43,6 +44,6 @@ if settings.DEBUG:
     ] + urlpatterns
 
 # Admin site customisation
-admin.site.site_header  =  "neverDrugs.io"  
-admin.site.site_title  =  "neverDrugs.io administration"
-admin.site.index_title  =  "neverDrugs.io Admin"
+admin.site.site_header = "neverDrugs.io"
+admin.site.site_title = "neverDrugs.io administration"
+admin.site.index_title = "neverDrugs.io Admin"
