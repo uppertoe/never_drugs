@@ -5,12 +5,21 @@
 <div class="list-group">
 {% for review in session_list %}
 <a href="#" class="list-group-item list-group-item-action">
-    <div class="d-flex justify-content-between">
+    <div class="row justify-content-between">
+        <div class="col-8">
         <h5 class="mb-1">Meeting on {{ review.date_created | date:"l j/n/Y" }}</h5>
+        </div>
+        {% if review.open or review.interaction_reviews.all %}
+        <div class="col-4 text-end">
+        {% if review.open %}
+        <span class="badge bg-danger rounded-pill">Live</span>
+        {% endif %}
         {% if review.interaction_reviews.all %}
-        <span class="badge bg-primary rounded-pill d-flex align-items-center">
+        <span class="badge bg-primary rounded-pill ms-1">
             {{ review.interaction_reviews.all.count }} Article{{ review.interaction_reviews.all.count|pluralize }}
         </span>
+        {% endif %}
+        </div>
         {% endif %}
     </div>
     {% if review.host %}

@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from core.utilities import JsonableResponseMixin
 from .models import Ticket
 
-# Create your views here.
+
 class TicketListView(LoginRequiredMixin, ListView):
     context_object_name = 'ticket_list'
     template_name = 'tickets/ticket_list.html'
@@ -21,6 +21,7 @@ class TicketListView(LoginRequiredMixin, ListView):
             context['all_tickets'] = Ticket.objects.filter(actioned=False)
         return context
 
+
 class TicketCreateView(JsonableResponseMixin, CreateView):
     model = Ticket
     fields = 'name', 'description'
@@ -32,6 +33,8 @@ class TicketCreateView(JsonableResponseMixin, CreateView):
             response = super().form_valid(form)
         else:
             response = super().form_valid(form)
-            # Store (serializable) UUID as string in session['ticket'] dictionary
-            self.request.session['ticket'] = self.request.session.get('ticket', []) + [str(self.object.pk)]
+            # Store (serializable) UUID as string
+            # in session['ticket'] dictionary
+            self.request.session['ticket'] = \
+                self.request.session.get('ticket', []) + [str(self.object.pk)]
         return response

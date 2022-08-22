@@ -1,0 +1,14 @@
+{% load static %}
+{% for review in session.reviews.all %}
+<a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3"
+    aria-current="true">
+    <img src="{% static 'images/clipboard2-pulse-fill.svg'%}" alt="clipboard" width="32" height="32"
+        class=" flex-shrink-0">
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+            <h6 class="mb-0">{{ review.interaction.name | capfirst}}</h6>
+            <small class="opacity-50 text-nowrap">{{ review.date_created}}</small>
+        </div>
+    </div>
+</a>
+{% endfor %}
