@@ -1,25 +1,42 @@
 const display_pane = document.getElementById("display-pane");
-console.log(display_pane)
+const review_link = document.querySelectorAll('.review_link');
 
-document.querySelectorAll('.review_link').forEach(item => {
+function createSpinner() {
+    const spinner = document.createElement("span");
+    spinner.classList.add("spinner-border", "p-3", "mx-auto", "my-5", "d-flex");
+    display_pane.innerHTML = spinner.outerHTML;
+}
+
+function createMessage(text) {
+    const message = document.createElement("p");
+    message.classList.add("m-auto");
+    message.innerText = text;
+    display_pane.innerHTML = message.outerHTML;
+}
+
+function toggleActive(nodelist) {
+    nodelist.forEach((item) => item.classList.remove("active"))
+}
+
+review_link.forEach(item => {
     item.addEventListener('click', e => {
         e.preventDefault();
-        url = item.href;
-    
+        toggleActive(review_link)
+        item.classList.toggle("active");
+        url = item.getAttribute("ajax");
+        createSpinner();
         fetch(url, {
             method: 'get',
             headers: {"X-Requested-With": "XMLHttpRequest"}
         })
         .then((response)=> response.json())
         .then((data)=> {
-            const html = decodeURIComponent(data.html)
-            console.log(html);
-            console.log(display_pane)
+            const html = decodeURIComponent(data.html);
             display_pane.innerHTML = html;
         })
         .catch((error)=> {
             console.error(error);
+            createMessage("Connection lost");
         })
     })
 })
-

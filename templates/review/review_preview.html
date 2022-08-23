@@ -1,14 +1,16 @@
 {% load static %}
-{% for review in session.reviews.all %}
-<a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3"
-    aria-current="true">
-    <img src="{% static 'images/clipboard2-pulse-fill.svg'%}" alt="clipboard" width="32" height="32"
-        class=" flex-shrink-0">
-    <div class="d-flex gap-2 w-100 justify-content-between">
-        <div>
-            <h6 class="mb-0">{{ review.interaction.name | capfirst}}</h6>
-            <small class="opacity-50 text-nowrap">{{ review.date_created}}</small>
-        </div>
+{% for review in session.interaction_reviews.all %}
+<div class="card mb-2">
+    <h5 class="card-header">{{ review.interaction.get_peer_review_status_display|capfirst }}</h5>
+    <div class="card-body">
+        <h5 class="card-title">{{ review.interaction.name | capfirst}}</h5>
+        <p>
+            <span class="card-text">Author: {{ review.interaction.created_by }}<br></span>
+            <span class="card-text">Modified by: {{ review.interaction.last_edited_by }}<br></span>
+        </p>
+        <p class="text-muted small">{{ review.date_created }}</p>
+        <a href="{{ review.interaction.get_absolute_url }}" target="_blank" class="btn btn-outline-primary">Recommendations</a>
+        <a href="{{ review.interaction.get_absolute_url }}" target="_blank" class="btn btn-outline-secondary">Article</a>
     </div>
-</a>
+</div>
 {% endfor %}

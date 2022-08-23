@@ -29,7 +29,7 @@ def AjaxReviewDetailView(request):
         if request.method == 'GET':
             session = get_object_or_404(ReviewSession, pk=id)
             context = {
-                'reviews': Review.objects.filter(
+                'interaction_reviews': Review.objects.filter(
                     interaction_reviews=session
                     ).prefetch_related('interaction')
             }
