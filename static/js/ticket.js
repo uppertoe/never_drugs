@@ -1,6 +1,6 @@
 const form = document.getElementById("form-ticket");
-const button = document.getElementById("btn-ticket-submit")
-const fieldset = document.getElementById("fieldset-ticket")
+const button = document.getElementById("btn-ticket-submit");
+const fieldset = document.getElementById("fieldset-ticket");
 const spinner = document.createElement("span");
 
 function dataSent() {

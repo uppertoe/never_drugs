@@ -1,5 +1,8 @@
+import uuid
 from django.views.generic import ListView, DetailView
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import (
+    HttpResponse, HttpResponseBadRequest,
+    JsonResponse, Http404)
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
@@ -18,17 +21,20 @@ class SessionListView(ListView):
 def AjaxReviewDetailView(request):
     is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
     id = request.GET.get('id')
+    try:  # Verify that a valid UUID was passed
+        id = uuid.UUID(id)
+    except ValueError:
+        raise Http404("Invalid resource identifier")
     if is_ajax:
         if request.method == 'GET':
             session = get_object_or_404(ReviewSession, pk=id)
             context = {
-                'session': session,
-                'id': id,
                 'reviews': Review.objects.filter(
                     interaction_reviews=session
                     ).prefetch_related('interaction')
             }
-            return HttpResponse(render_to_string('review/review_preview.html', {'session': context}))
+            return JsonResponse(
+                {'html': render_to_string('review/review_preview.html', {'session': context})})
         return JsonResponse({'status': 'Bad Request'}, status=400)
     else:
         return HttpResponseBadRequest('Bad Request')

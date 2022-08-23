@@ -60,6 +60,9 @@ class ReviewSession(models.Model):
     def user_list_string(self):
         return ' ,'.join(user.username for user in self.user_list.all())
 
+    def get_ajax_url(self):
+        return reverse("ajax_review_detail") + f"?id={self.id}"
+
     def get_absolute_url(self):
         return reverse("session_detail", kwargs={"pk": self.id})
 

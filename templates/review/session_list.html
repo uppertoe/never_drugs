@@ -1,10 +1,11 @@
 {% extends 'review/_split_view.html' %}
+{% load static %}
 
 {% block left_col %}
 <h1 class="fw-bold lh-1 mb-3 pb-2">Peer Review Meetings</h1>
 <div class="list-group">
 {% for review in session_list %}
-<a href="#" class="list-group-item list-group-item-action">
+<a href="{{ review.get_ajax_url }}" class="list-group-item list-group-item-action review_link">
     <div class="row justify-content-between">
         <div class="col-8">
         <h5 class="mb-1">Meeting on {{ review.date_created | date:"l j/n/Y" }}</h5>
@@ -35,8 +36,12 @@
 
 {% block right_col %}
 <div class="p-4 p-md-5 border rounded-3">
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center" id="display-pane">
         <p>Placeholder Content</p>
     </div>
 </div>
 {% endblock right_col %}
+
+{% block javascript %}
+<script src='{% static 'js/session.js' %}'></script>
+{% endblock javascript %}
