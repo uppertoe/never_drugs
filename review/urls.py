@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (
     SessionListView, SessionDetailView, ReviewListView,
-    ReviewDetailView, AjaxReviewDetailView)
+    ReviewDetailView, SessionCreateView, AjaxReviewDetailView)
 
 urlpatterns = [
     path(
@@ -24,4 +24,8 @@ urlpatterns = [
     path(
         'session/ajax',
         AjaxReviewDetailView,
-        name='ajax_review_detail')]
+        name='ajax_review_detail'),
+    path(
+        'session/start',
+        SessionCreateView.as_view(),
+        name='session_create')]

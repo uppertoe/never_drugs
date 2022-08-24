@@ -1,7 +1,5 @@
 from django.contrib import admin
 
-from markdownx.admin import MarkdownxModelAdmin
-
 from .models import DrugClass, Drug, Condition, Interaction, Source
 from .forms import InteractionAdminForm
 
@@ -44,7 +42,7 @@ class DrugAdmin(SaveAuthorMixin, admin.ModelAdmin):
         return qs.prefetch_related('drug_class')
 
 
-class InteractionAdmin(SaveAuthorMixin, MarkdownxModelAdmin):
+class InteractionAdmin(SaveAuthorMixin, admin.ModelAdmin):
     form = InteractionAdminForm  # Extends field validation
     list_display = (
         'name',

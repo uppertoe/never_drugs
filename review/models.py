@@ -28,8 +28,8 @@ class Review(models.Model):
         return reverse("review_detail", kwargs={"pk": self.id})
 
     def __str__(self):
-        return f'Peer reivew of interaction: \
-            {self.interaction.name} on {self.date_created}'
+        return f'Peer review of: {self.interaction.name.lower()} \
+            on {self.date_created.strftime("%d %b %Y")}'
 
 
 class ReviewSession(models.Model):
@@ -40,6 +40,7 @@ class ReviewSession(models.Model):
     interaction_reviews = models.ManyToManyField(
         Review,
         related_name='interaction_reviews',
+        verbose_name='Interactions for peer review',
         blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -47,7 +48,7 @@ class ReviewSession(models.Model):
     host = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name='Host for the peer review session',
+        verbose_name='Chairperson for the meeting',
         null=True,
         blank=True,
         related_name='host')

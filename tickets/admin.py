@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import Ticket
 
-# Register your models here.
+
 class TicketAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_by', 'actioned', 'for_review')
     list_editable = ('actioned', 'for_review')
@@ -13,5 +13,6 @@ class TicketAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.last_edited_by = request.user
         super().save_model(request, obj, form, change)
+
 
 admin.site.register(Ticket, TicketAdmin)

@@ -9,8 +9,25 @@
             <span class="card-text">Modified by: {{ review.interaction.last_edited_by }}<br></span>
         </p>
         <p class="text-muted small">{{ review.date_created }}</p>
-        <a href="{{ review.interaction.get_absolute_url }}" target="_blank" class="btn btn-outline-primary">Recommendations</a>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#modal-{{ review.id }}" class="btn btn-outline-primary" aria-labelledby="label-{{ review.id}}" aria-hidden="true">Recommendations</button>
         <a href="{{ review.interaction.get_absolute_url }}" target="_blank" class="btn btn-outline-secondary">Article</a>
     </div>
 </div>
+
+<div class="modal fade" id="modal-{{ review.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="label-{{ review.id }}">{{ review.interaction.name }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <p>{{ review.comment_markdown|safe }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endfor %}

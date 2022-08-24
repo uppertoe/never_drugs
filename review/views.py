@@ -1,12 +1,19 @@
 import uuid
 from django.views.generic import ListView, DetailView
-from django.http import (
-    HttpResponse, HttpResponseBadRequest,
-    JsonResponse, Http404)
+from django.views.generic.edit import CreateView
+from django.http import HttpResponseBadRequest, JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
 from .models import Review, ReviewSession
+from .forms import InteractionForReviewForm
+
+
+class SessionCreateView(CreateView):
+    model = ReviewSession
+    # fields = ['interaction_reviews', 'host', 'open']
+    form_class = InteractionForReviewForm
+    template_name_suffix = '_create'
 
 
 class SessionListView(ListView):
@@ -14,7 +21,7 @@ class SessionListView(ListView):
     context_object_name = 'session_list'
     template_name = 'review/session_list.html'
     queryset = ReviewSession.objects.all().prefetch_related(
-        'interaction_reviews', 'user_list'
+        'interaction_reviews', 'user_list', 'host'
     )
 
 
