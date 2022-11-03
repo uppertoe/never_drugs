@@ -1,5 +1,36 @@
-{% extends 'review/_split_view.html' %}
+{% extends 'review/_split_view_large.html' %}
+{% load static %}
 
-{% block left_col %}{% endblock left_col %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+{% endblock css %}
 
-{% block right_col %}{% endblock right_col %}
+{% block left_col %}
+<div class="list-group">
+    {% for review in reviews %}
+    <button class="review-button list-group-item list-group-item-action {% if forloop.first %}active{% endif %}" type="button" id="{{review.id}}">
+        <h5 class="mb-1">{{ review.interaction.name }}</h5>
+        <small>{{ review.date_created }}</small>
+    </button>
+    {% endfor %}
+</div>
+{% endblock left_col %}
+
+{% block right_col %}
+<div class="p-4 p-md-5 border rounded-3 bg-light">
+{% for review in reviews %}
+<div class="review{% if not forloop.first %} hide{%endif%}" id="review-{{review.id}}">
+<h3>{{ review.interaction.name }}</h3>
+<div class="mb-3">
+    <label for="comment-{{ review.id }}" class="form-label">Meeting comments for this article</label>
+    <textarea class="form-control" placeholder="Meeting comments for this article" rows="10" id="comment-{{ review.id }}">{{ review.comment }}</textarea>
+</div>
+{{ review.comment_markdown|safe }}
+</div>
+{% endfor %}
+</div>
+{% endblock right_col %}
+
+{% block javascript %}
+<script src="{% static 'js/reviews.js' %}"></script>
+{% endblock javascript %}

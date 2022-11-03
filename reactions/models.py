@@ -102,6 +102,17 @@ class Drug(models.Model):
 
 
 class Condition(models.Model):
+    # Peer review choices
+    DRAFT = 'DR'
+    MODIFY = 'MO'
+    MOD_THEN_ACCEPT = 'AM'
+    ACCEPT = 'AC'
+    peer_review_choices = [
+        (DRAFT, 'Draft'),
+        (MODIFY, 'Requires modifications, then re-review'),
+        (MOD_THEN_ACCEPT, 'Accepted after minor changes'),
+        (ACCEPT, 'Accepted'), ]
+    
     name = models.CharField(max_length=255, unique=True)
     aliases = models.CharField(max_length=1023, blank=True)
     slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
@@ -110,6 +121,13 @@ class Condition(models.Model):
         Source,
         related_name='condition_sources',
         blank=True)
+    ready_for_peer_review = models.BooleanField(
+        default=False,
+        verbose_name='Ready for peer review?')
+    peer_review_status = models.CharField(
+        max_length=2,
+        choices=peer_review_choices,
+        default=DRAFT)
     ready_to_publish = models.BooleanField(
         default=False,
         verbose_name='Ready to publish?')  # False excludes from search

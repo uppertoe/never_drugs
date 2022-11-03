@@ -27,16 +27,21 @@ review_link.forEach(item => {
         createSpinner();
         fetch(url, {
             method: 'get',
-            headers: {"X-Requested-With": "XMLHttpRequest"}
+            headers: { "X-Requested-With": "XMLHttpRequest" }
         })
-        .then((response)=> response.json())
-        .then((data)=> {
-            const html = decodeURIComponent(data.html);
-            display_pane.innerHTML = html;
-        })
-        .catch((error)=> {
-            console.error(error);
-            createMessage("Connection lost");
-        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.html) {
+                    const html = decodeURIComponent(data.html);
+                    display_pane.innerHTML = html;
+                } else {
+                    const status = data.status;
+                    display_pane.innerText = status;
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                createMessage("Connection lost");
+            })
     })
 })

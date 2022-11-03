@@ -1,6 +1,5 @@
 from django.forms import ModelForm
 
-from reactions.models import Interaction
 from .models import ReviewSession, Review
 
 
@@ -15,7 +14,7 @@ class InteractionForReviewForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['interaction_reviews'].queryset = (
-            Review.objects
+            Review.objects  # Exclude accepted articles
             .filter(interaction__ready_for_peer_review=True)
-            .exclude(interaction__peer_review_status='AC')  # Exclude accepted articles
+            .exclude(interaction__peer_review_status='AC')
             )
