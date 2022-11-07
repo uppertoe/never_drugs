@@ -72,7 +72,7 @@ class InteractionDetailView(DetailView):
         'secondary_conditions', 'sources')
 
 
-def SearchView(request, **kwargs):
+def search_view(request, **kwargs):
     query = request.GET.get('q')
     context = kwargs
     if query:
@@ -117,7 +117,9 @@ def escape_model_fields(model, sep, *args):
     return output
 
 
-def ListContentsView(request):
+def list_contents_view(request):
+    # Provides a list of drug.name/alias and
+    # condition.name/alias for autocomplete
     is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
     if is_ajax:
         if request.method == 'GET':

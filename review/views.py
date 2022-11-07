@@ -30,7 +30,7 @@ class SessionListView(LoginRequiredMixin, ListView):
     )
 
 
-def AjaxReviewDetailView(request):
+def ajax_review_detail_view(request):
 
     if not request.user.is_authenticated:
         return JsonResponse({'status': 'Forbidden'}, status=401)
@@ -96,3 +96,49 @@ class ReviewDetailView(DetailView):
     model = Review
     context_object_name = 'review'
     template_name = 'review/review_detail.html'
+
+
+def active_review_session(request):
+    # Check whether the current user is the host to select the HTML template
+    pass
+
+
+def ajax_active_review_session(request):
+
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'Forbidden'}, status=401)
+
+    if not request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        return HttpResponseBadRequest('Bad Request')
+
+    if request.method == 'GET':
+        # Retrieve the result from Review.update
+        review_pk = request.GET.get("review_id")
+        current_review = get_object_or_404(Review, review_pk)
+        return JsonResponse({'update': current_review.update}, status=200)
+
+    if request.method == 'POST':
+        # Look up the ReviewSession
+        session_pk = request.POST.get("session_id")
+        # Check whether the current user is host
+        current_session = get_object_or_404(ReviewSession, session_pk)
+        if not request.user == current_session.host:
+            return JsonResponse({'status': 'Forbidden'}, status=401)
+        # Determine the Review to be updated
+        review_pk = request.POST.get("review_id")
+        review = get_object_or_404(Review, review_pk)
+        # Check whether the Review is in the current ReviewSession
+        if review not in current_session.interaction_reviews:
+            return JsonResponse({'status': 'Forbidden'}, status=401)
+        # Store the result in Review.update
+        review.update = request.POST.get("update")
+        review.save()
+        return JsonResponse({'status': 'Update Successful'}, status=200)
+
+
+def ajax_save_review_session(request):
+    # Check that the user is logged in
+    # Check whether the request is ajax
+    # Check whether the current user is host
+    # Store the contents of the host's session in the database
+    pass

@@ -18,6 +18,7 @@ class Review(models.Model):
         related_name='interaction',
         on_delete=models.CASCADE)
     comment = MarkdownxField()
+    update = MarkdownxField()
     date_created = models.DateTimeField(auto_now_add=True)
     actioned = models.BooleanField(default=False)
 

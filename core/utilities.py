@@ -3,6 +3,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Model
 from django.http import JsonResponse
 
+
 class ExtendedEncoder(DjangoJSONEncoder):
     """
     Allows model objects to be passed to the json encoder
@@ -14,6 +15,7 @@ class ExtendedEncoder(DjangoJSONEncoder):
             return model_to_dict(o)
 
         return super().default(o)
+
 
 class JsonableResponseMixin:
     """
@@ -37,4 +39,4 @@ class JsonableResponseMixin:
         if not is_ajax:
             return response
         else:
-           return JsonResponse({'response': self.object.pk})
+            return JsonResponse({'response': self.object.pk})
