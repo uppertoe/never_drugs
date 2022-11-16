@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 
 from .models import Review, ReviewSession
 from .forms import InteractionForReviewForm
@@ -101,9 +100,10 @@ class ReviewListView(ListView):
 class ReviewDetailView(DetailView):
     model = Review
     context_object_name = 'review'
-    current_session_id = ''
+    current_session_id = None
 
     def get(self, request, *args, **kwargs):
+        # Check whether a valid UUID was passed
         session_id = request.GET.get('session_id')
         if session_id:
             try:
@@ -127,12 +127,24 @@ class ReviewDetailView(DetailView):
             return ['review/review_host_detail.html']
         return ['review/review_detail.html']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add the referring ReviewSession to the context
+        if self.current_session_id:  # TRUE if is valid UUID
+            try:
+                review_session = ReviewSession.objects.get(
+                    id=self.current_session_id)
+                context['review_session'] = review_session
+            except ReviewSession.DoesNotExist:
+                message = 'No match for ReviewSession GET parameter'
+                print(f'{message}: {self.current_session_id}')
+        return context
+
 
 def ajax_check_last_update(request):
     '''
     Returns the last_ajax (DateTime) value for a given session_id
     '''
-
     if not request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         return HttpResponseBadRequest('Bad Request')
 

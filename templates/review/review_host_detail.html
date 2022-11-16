@@ -1,5 +1,10 @@
 {% extends 'review/_split_view.html' %}
 
-{% block left_col %}<h1>HOST</h1>{% endblock left_col %}
+{% block left_col %}
+{% if review_session %}
+<a href="{{ review_session.get_absolute_url }}">&lt; Back to referring session</a>
+{% endif %}
+<h1>HOST</h1>
+{% endblock left_col %}
 
 {% block right_col %}{% endblock right_col %}
