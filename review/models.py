@@ -17,8 +17,8 @@ class Review(models.Model):
         Interaction,
         related_name='interaction',
         on_delete=models.CASCADE)
-    comment = MarkdownxField()
-    update = MarkdownxField()
+    comment = MarkdownxField(blank=True, null=True)
+    update = MarkdownxField(blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     actioned = models.BooleanField(default=False)
 
@@ -45,6 +45,7 @@ class ReviewSession(models.Model):
         blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    last_ajax = models.DateTimeField(blank=True, null=True)
     open = models.BooleanField(default=False)
     host = models.ForeignKey(
         settings.AUTH_USER_MODEL,
