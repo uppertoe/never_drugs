@@ -1,9 +1,25 @@
 const review_textarea = document.getElementById('reviewCommentTextarea');
+const connection_message = document.getElementById('connection')
 const auto_update_delay_ms = 500;
 const empty_message = 'Peer review meeting comments will appear in this space'
+const connected_message = 'Connected'
+const disconnected_message = 'Connecting...'
 // Implemented in template:
-// const review_id
 // const update_url
+
+function connected() {
+    const html = document.createElement("span")
+    html.classList.add("badge", "bg-success", "p-2")
+    html.innerText = connected_message
+    connection_message.replaceChildren(html)
+}
+
+function connectionLost() {
+    const html = document.createElement("span")
+    html.classList.add("badge", "bg-danger", "p-2")
+    html.innerText = disconnected_message
+    connection_message.replaceChildren(html)
+}
 
 function autoUpdate() {
     fetch(update_url, {
@@ -24,9 +40,11 @@ function autoUpdate() {
                 html.innerText = empty_message
                 review_textarea.replaceChildren(html)
             }
+            connected()
         })
         .catch((error) => {
             console.error(error);
+            connectionLost()
         })
 }
 
