@@ -1,10 +1,44 @@
-{% extends 'review/_split_view.html' %}
+{% extends 'review/_review_detail.html' %}
+{% load static %}
 
-{% block left_col %}
-{% if review_session %}
-<a href="{{ review_session.get_absolute_url }}">&lt; Back to referring session</a>
-{% endif %}
-<h1>HOST</h1>
-{% endblock left_col %}
+{% block textbox %}
+<textarea class="form-control" placeholder="Meeting comments for this article" rows="10" id="reviewTextarea">{{ review.comment }}</textarea>
+{% endblock textbox %}
 
-{% block right_col %}{% endblock right_col %}
+{% block buttons %}
+
+<div class="btn-group d-flex" role="group" aria-label="Article comment buttons">
+    <button class="btn btn-outline-primary" id="btnSave">Save changes</button>
+    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmRevert">Revert</button>
+</div>
+
+<div class="modal fade" id="confirmRevert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirmRevertLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="confirmRevertLabel">Are you sure you want to revert changes?</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Comment will be reverted to:</p>
+          <div id="revertComment">{{review.comment|linebreaks}}</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" id="btnRevert">Revert</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock buttons %}
+
+{% block javascript %}
+<script>
+const review_id = "{{review.id}}";
+const session_id = "{{review_session.id}}";
+const save_url = "{% url 'ajax-save-review' %}";
+const revert_url = "{% url 'ajax-revert-review' %}";
+const update_url = "{% url 'ajax-update-review' %}";
+</script>
+<script src="{% static 'js/review_host_detail.js' %}"></script>
+{% endblock javascript %}

@@ -1,7 +1,22 @@
-{% extends 'review/_split_view.html' %}
+{% extends 'review/_review_detail.html' %}
+{% load static %}
 
-{% block left_col %}
-<h1>NOT HOST</h1>
-{% endblock left_col %}
+{% block textbox %}
+<div class="card">
+    <div class="card-body" id="reviewCommentTextarea">
+        {% if review.update_markdown %}
+        {{ review.update_markdown | safe}}
+        {% else %}
+        <div class="text-muted">Peer review meeting comments will appear in this space</div>
+        {% endif %}
+    </div>
+  </div>
+{% endblock textbox %}
 
-{% block right_col %}{% endblock right_col %}
+{% block javascript %}
+<script>
+    const review_id = "{{ review.id }}";
+    const update_url = "{% url 'ajax-update-review' %}?review_id={{ review.id }}";
+</script>
+<script src="{% static 'js/review_detail.js' %}"></script>
+{% endblock javascript %}

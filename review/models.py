@@ -25,6 +25,9 @@ class Review(models.Model):
     def comment_markdown(self):
         return markdownify(self.comment)
 
+    def update_markdown(self):
+        return markdownify(self.update)
+
     def get_absolute_url(self):
         return reverse("review_detail", kwargs={"pk": self.id})
 
