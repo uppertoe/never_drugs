@@ -39,6 +39,7 @@ const session_id = "{{review_session.id}}";
 const save_url = "{% url 'ajax-save-review' %}";
 const revert_url = "{% url 'ajax-revert-review' %}";
 const update_url = "{% url 'ajax-update-review' %}";
+const get_param = "?review_id={{ review.id }}&session_id={{ review_session.id }}"
 </script>
 <script src="{% static 'js/review_host_detail.js' %}"></script>
 {% endblock javascript %}

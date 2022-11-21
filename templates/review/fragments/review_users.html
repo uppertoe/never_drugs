@@ -1,0 +1,4 @@
+<h6>Participants:</h6>
+{% for user in review_session.user_list.all %}
+<div>{{user|capfirst}}</div>
+{% endfor %}

@@ -1,16 +1,26 @@
+// Elements
 const review_textarea = document.getElementById('reviewTextarea');
 const btn_save = document.getElementById('btnSave');
 const btn_revert = document.getElementById('btnRevert');
 const revert_text = document.getElementById('revertComment');
+const user_list = document.getElementById('userList')
+const connection = document.getElementById('connection')
+
+// Variables
+var post = false;
 const auto_update_delay_ms = 500
-var text_changed = false;
-// implemented in template:
+const connected_message = 'Connected'
+const disconnected_message = 'Connecting...'
+
+// Implemented in template:
 // const review_id
 // const session_id
 // const update_url
 // const save_url
 // const revert_url
+// const get_param
 
+// Get CSRF Token from document.cookie
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -28,6 +38,21 @@ function getCookie(name) {
 }
 
 const csrftoken = getCookie('csrftoken');
+
+function connected() {
+    const html = document.createElement("span")
+    html.classList.add("badge", "bg-success", "p-2")
+    html.innerText = connected_message
+    connection.replaceChildren(html)
+}
+
+function connectionLost() {
+    const html = document.createElement("span")
+    html.classList.add("badge", "bg-danger", "p-2")
+    html.innerText = disconnected_message
+    connection.replaceChildren(html)
+    post = true // Forces POST once reconnected
+}
 
 function getData() {
     data = {
@@ -50,7 +75,6 @@ function saveChanges() {
     })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data)
             revert_text.innerHTML = data.latest_comment_html;
             review_textarea.value = data.latest_comment;
         })
@@ -71,7 +95,6 @@ function revertChanges() {
     })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data)
             revert_text.innerHTML = data.latest_comment_html;
             review_textarea.value = data.latest_comment;
             modalRevert = document.getElementById('confirmRevert');
@@ -83,7 +106,7 @@ function revertChanges() {
         })
 }
 
-function autoUpdate() {
+function fetchPost() {
     fetch(update_url, {
         method: 'post',
         headers: {
@@ -99,13 +122,36 @@ function autoUpdate() {
         })
         .catch((error) => {
             console.error(error);
+            connectionLost()
+        })
+}
+
+function fetchGet() {
+    fetch(update_url + get_param, {
+        method: 'get',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            user_list.innerHTML = data.user_list_html
+            revert_text.innerHTML = data.revert_text_html
+            connected()
+        })
+        .catch((error) => {
+            console.error(error);
+            connectionLost()
         })
 }
 
 function updateTimer() {
-    if (text_changed === true) {
-        autoUpdate()
-        text_changed = false
+    if (post === true) {
+        fetchPost()
+        post = false
+    } else {
+        fetchGet()
     }
 }
 
@@ -119,8 +165,8 @@ btn_revert.addEventListener('click', (e) => {
     revertChanges();
 })
 
-review_textarea.addEventListener('input', (e) => {
-    text_changed = true
+review_textarea.addEventListener('input', () => {
+    post = true
 })
 
 setInterval(updateTimer, auto_update_delay_ms);

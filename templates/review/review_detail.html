@@ -1,10 +1,6 @@
 {% extends 'review/_review_detail.html' %}
 {% load static %}
 
-{% block connection %}
-<span id="connection"></span>
-{% endblock connection %}
-
 {% block textbox %}
 <div class="card">
     <div class="card-body" id="reviewCommentTextarea">
@@ -18,6 +14,7 @@
 {% endblock textbox %}
 
 {% block javascript %}
-<script>const update_url = "{% url 'ajax-update-review' %}?review_id={{ review.id }}";</script>
+<script>
+const update_url = "{% url 'ajax-update-review' %}?review_id={{ review.id }}{% if review_session %}&session_id={{ review_session.id }}{% endif %}";</script>
 <script src="{% static 'js/review_detail.js' %}"></script>
 {% endblock javascript %}
