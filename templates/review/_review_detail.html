@@ -4,7 +4,7 @@
 <h3 class="display-5 fw-bold">Peer Review</h3>
 {% if review_session %}
 <a href="{{ review_session.get_absolute_url }}" class="text-decoration-none">&lt; Back to referring session</a>
-<div class="row py-3">
+<div class="row mt-3">
     <div class="col-6">
         <h6>Host:</h6>
         <p>{{review_session.host|capfirst}}</p>
@@ -13,8 +13,7 @@
     <div class="col-6" id="userList">{% include 'review/fragments/review_users.html' %}</div>
 </div>
 {% endif %}
-</div>
-<div class="mb-3">
+<div class="my-3">
 {% block textbox %}{% endblock textbox %}
 </div>
 {% block buttons %}{% endblock buttons %}

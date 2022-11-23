@@ -1,5 +1,11 @@
 {% load static %}
-{% for review in session.interaction_reviews.all %}
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Meeting in progress</h4>
+  <p>The following articles are under active discussion. Follow the link below to join the meeting.</p>
+  <hr>
+  <p class="mb-0"><a href="{{session.get_absolute_url}}" class="btn btn-outline-success">Join Meeting</a></p>
+</div>
+{% for review in review_list.all %}
 <div class="card mb-2">
     <h5 class="card-header">{{ review.interaction.get_peer_review_status_display|capfirst }}</h5>
     <div class="card-body">

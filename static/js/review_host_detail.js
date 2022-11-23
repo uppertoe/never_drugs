@@ -3,14 +3,14 @@ const review_textarea = document.getElementById('reviewTextarea');
 const btn_save = document.getElementById('btnSave');
 const btn_revert = document.getElementById('btnRevert');
 const revert_text = document.getElementById('revertComment');
-const user_list = document.getElementById('userList')
-const connection = document.getElementById('connection')
+const user_list = document.getElementById('userList');
+const connection = document.getElementById('connection');
 
 // Variables
 var post = false;
-const auto_update_delay_ms = 500
-const connected_message = 'Connected'
-const disconnected_message = 'Connecting...'
+const auto_update_delay_ms = 500;
+const connected_message = 'Connected';
+const disconnected_message = 'Connecting...';
 
 // Implemented in template:
 // const review_id
@@ -40,18 +40,18 @@ function getCookie(name) {
 const csrftoken = getCookie('csrftoken');
 
 function connected() {
-    const html = document.createElement("span")
-    html.classList.add("badge", "bg-success", "p-2")
-    html.innerText = connected_message
-    connection.replaceChildren(html)
+    const html = document.createElement("span");
+    html.classList.add("badge", "bg-success", "p-2");
+    html.innerText = connected_message;
+    connection.replaceChildren(html);
 }
 
 function connectionLost() {
-    const html = document.createElement("span")
-    html.classList.add("badge", "bg-danger", "p-2")
-    html.innerText = disconnected_message
-    connection.replaceChildren(html)
-    post = true // Forces POST once reconnected
+    const html = document.createElement("span");
+    html.classList.add("badge", "bg-danger", "p-2");
+    html.innerText = disconnected_message;
+    connection.replaceChildren(html);
+    post = true; // Forces POST once reconnected
 }
 
 function getData() {
@@ -80,6 +80,7 @@ function saveChanges() {
         })
         .catch((error) => {
             console.error(error);
+            connectionLost();
         })
 }
 
@@ -103,6 +104,7 @@ function revertChanges() {
         })
         .catch((error) => {
             console.error(error);
+            connectionLost();
         })
 }
 
@@ -122,7 +124,7 @@ function fetchPost() {
         })
         .catch((error) => {
             console.error(error);
-            connectionLost()
+            connectionLost();
         })
 }
 
@@ -136,22 +138,22 @@ function fetchGet() {
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
-            user_list.innerHTML = data.user_list_html
-            revert_text.innerHTML = data.revert_text_html
-            connected()
+            user_list.innerHTML = data.user_list_html;
+            revert_text.innerHTML = data.revert_text_html;
+            connected();
         })
         .catch((error) => {
             console.error(error);
-            connectionLost()
+            connectionLost();
         })
 }
 
 function updateTimer() {
     if (post === true) {
-        fetchPost()
-        post = false
+        fetchPost();
+        post = false;
     } else {
-        fetchGet()
+        fetchGet();
     }
 }
 
@@ -166,7 +168,7 @@ btn_revert.addEventListener('click', (e) => {
 })
 
 review_textarea.addEventListener('input', () => {
-    post = true
+    post = true;
 })
 
 setInterval(updateTimer, auto_update_delay_ms);

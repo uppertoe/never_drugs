@@ -50,15 +50,17 @@ def ajax_review_detail_view(request):
         raise Http404("Invalid resource identifier")
 
     session = get_object_or_404(ReviewSession, pk=id)
-    context = {
-        'interaction_reviews': Review.objects.filter(
-            interaction_reviews=session
-            ).prefetch_related('interaction')
-    }
-    return JsonResponse(
-        {'html': render_to_string(
-            'review/fragments/review_preview.html', {'session': context}
-            )})
+    # Find the other reviews associated with this ReviewSession
+    associated_reviews = Review.objects.filter(
+        interaction_reviews=session
+        ).prefetch_related('interaction')
+    context = associated_reviews
+
+    # Render to HTML
+    html = render_to_string(
+        'review/fragments/review_preview.html',
+        {'review_list': context, 'session': session})
+    return JsonResponse({'html': html})
 
 
 class SessionDetailView(DetailView):
@@ -192,7 +194,6 @@ def ajax_save_review_session(request):
             'latest_comment': latest_comment,
         }
         return JsonResponse(response, status=200)
-
     return JsonResponse({'status': 'Bad Request'}, status=400)
 
 
@@ -238,7 +239,6 @@ def ajax_revert_review(request):
             'latest_comment': review.update,
         }
         return JsonResponse(response, status=200)
-
     return JsonResponse({'status': 'Bad Request'}, status=400)
 
 

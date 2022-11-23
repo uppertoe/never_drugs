@@ -49,7 +49,7 @@
                 href="{% url 'ticket-list' %}">Tickets</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle{% if request.resolver_match.url_name in 'session_list, session_create, session_detail' %} active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle{% if request.resolver_match.url_name in 'session_list, session_create, session_detail, review_detail' %} active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Peer-Review
                 </a>
                 <ul class="dropdown-menu">
@@ -58,7 +58,6 @@
                     <li><a class="dropdown-item" href="#">View my articles</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{% url 'session_create' %} ">Start new meeting</a></li>
-                    
                 </ul>
             </li>
             {% endif %}
