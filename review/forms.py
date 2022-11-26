@@ -1,9 +1,9 @@
-from django.forms import ModelForm
+from django import forms
 
 from .models import ReviewSession, Review
 
 
-class InteractionForReviewForm(ModelForm):
+class InteractionForReviewForm(forms.ModelForm):
     '''
     Filters fields available in the Session CreateView
     '''
@@ -18,3 +18,4 @@ class InteractionForReviewForm(ModelForm):
             .filter(interaction__ready_for_peer_review=True)
             .exclude(interaction__peer_review_status='AC')
             )
+

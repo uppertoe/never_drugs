@@ -1,18 +1,27 @@
 {% load static %}
+{% if session.open %}
 <div class="alert alert-success" role="alert">
   <h4 class="alert-heading">Meeting in progress</h4>
   <p>The following articles are under active discussion. Follow the link below to join the meeting.</p>
   <hr>
   <p class="mb-0"><a href="{{session.get_absolute_url}}" class="btn btn-outline-success">Join Meeting</a></p>
 </div>
+{% else %}
+<div class="alert alert-secondary" role="alert">
+  <h4 class="alert-heading">Meeting closed</h4>
+  <p>The following articles have been discussed in a previous session. Follow the link below to review the meeting.</p>
+  <hr>
+  <p class="mb-0"><a href="{{session.get_absolute_url}}" class="btn btn-outline-secondary">Review Meeting</a></p>
+</div>
+{% endif %}
 {% for review in review_list.all %}
 <div class="card mb-2">
-    <h5 class="card-header">{{ review.interaction.get_peer_review_status_display|capfirst }}</h5>
+    <h5 class="card-header">Article status: {{ review.interaction.get_peer_review_status_display|lower }}</h5>
     <div class="card-body">
         <h5 class="card-title">{{ review.interaction.name | capfirst}}</h5>
         <p>
-            <span class="card-text">Author: {{ review.interaction.created_by }}<br></span>
-            <span class="card-text">Modified by: {{ review.interaction.last_edited_by }}<br></span>
+            <span class="card-text">Author: {{ review.interaction.created_by|capfirst }}<br></span>
+            <span class="card-text">Last modified by: {{ review.interaction.last_edited_by|capfirst }}<br></span>
         </p>
         <p class="text-muted small">{{ review.date_created }}</p>
         <button type="button" data-bs-toggle="modal" data-bs-target="#modal-{{ review.id }}" class="btn btn-outline-primary" aria-labelledby="label-{{ review.id}}" aria-hidden="true">Recommendations</button>

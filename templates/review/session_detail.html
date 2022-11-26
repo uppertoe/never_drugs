@@ -6,9 +6,9 @@
 {% endblock css %}
 
 {% block left_col %}
-<h1 class="fw-bold lh-1 mb-2">Articles Under Review</h1>
+<h1 class="fw-bold lh-1 mb-3">Articles Under Review</h1>
 <a href="{% url 'session_list' %}" class="text-decoration-none">&lt; Back to all meetings</a>
-<div class="list-group pt-2">
+<div class="list-group pt-3">
     {% for review in reviews %}
     <button class="review-button list-group-item list-group-item-action {% if forloop.first %}active{% endif %}" type="button" id="{{review.id}}">
         <h5 class="mb-1">{{ review.interaction.name }}</h5>
@@ -19,17 +19,20 @@
 {% endblock left_col %}
 
 {% block right_col %}
-<h1 class="fw-bold lh-1 mb-3 pb-2">Review Notes</h1>
+<div class="alert alert-primary" role="alert">
+    <h4 class="alert-heading">Peer review notes</h4>
+    <p>The following articles have been selected for peer review in this session. Notes from the peer review are displayed below.</p>
+    <hr>
+    <p class="mb-0">Join the article discussion to view real-time changes</p>
+  </div>
 {% for review in reviews %}
 <div class="review{% if not forloop.first %} hide{%endif%}" id="review-{{review.id}}">
     <div class="card">
-        <div class="card-header">
-            <h3>{{review.interaction.get_peer_review_status_display}}</h3>
-        </div>
+            <h5 class="card-header">Article status: {{review.interaction.get_peer_review_status_display|lower}}</h5>
         <div class="card-body">
             <h5 class="card-title">{{ review.interaction.name }} - Peer review</h5>
             <p class="card-text">{{ review.comment_markdown|safe }}</p>
-            <a href="{{review.get_absolute_url}}?session_id={{session.id}}" class="btn btn-primary">Go to review</a>
+            <a href="{{review.get_absolute_url}}?session_id={{session.id}}" class="btn btn-outline-primary">Join Real-Time Discussion</a>
         </div>
     </div>
 </div>

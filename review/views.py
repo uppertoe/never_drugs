@@ -4,7 +4,7 @@ import datetime
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.http import HttpResponseBadRequest, JsonResponse, Http404
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,19 +15,22 @@ from .forms import InteractionForReviewForm
 
 class SessionCreateView(CreateView):
     model = ReviewSession
-    # fields = ['interaction_reviews', 'host', 'open']
     form_class = InteractionForReviewForm
     template_name = 'review/session_create.html'
 
     def get_success_url(self):
-        return reverse('session_detail', kwargs={'pk': self.object.id})
+        return reverse_lazy('session_detail', kwargs={'pk': self.object.id})
+
+
+def session_create_view(request):
+    pass
 
 
 class SessionListView(LoginRequiredMixin, ListView):
     model = ReviewSession
     context_object_name = 'session_list'
     template_name = 'review/session_list.html'
-    queryset = ReviewSession.objects.all().prefetch_related(
+    queryset = ReviewSession.objects.all().order_by('-date_created').prefetch_related(
         'interaction_reviews', 'user_list', 'host'
     )
 

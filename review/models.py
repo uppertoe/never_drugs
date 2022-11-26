@@ -20,6 +20,7 @@ class Review(models.Model):
     comment = MarkdownxField(blank=True, null=True)
     update = MarkdownxField(blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
     actioned = models.BooleanField(default=False)
 
     def comment_markdown(self):
@@ -32,8 +33,9 @@ class Review(models.Model):
         return reverse("review_detail", kwargs={"pk": self.id})
 
     def __str__(self):
-        return f'Peer review of: {self.interaction.name.lower()} \
-            on {self.date_created.strftime("%d %b %Y")}'
+        name = self.interaction.name.capitalize()
+        author = self.interaction.created_by.username.capitalize()
+        return f'\'{name}\' by {author}'
 
 
 class ReviewSession(models.Model):
@@ -64,7 +66,7 @@ class ReviewSession(models.Model):
         related_name='user_list')
 
     def user_list_string(self):
-        return ', '.join(user.username for user in self.user_list.all())
+        return ', '.join(user.username.capitalize() for user in self.user_list.all())
 
     def get_ajax_url(self):
         return reverse("ajax_review_detail") + f"?id={self.id}"

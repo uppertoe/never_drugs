@@ -24,7 +24,7 @@
         {% endif %}
     </div>
     {% if session.host %}
-    <p class="mb-1">Session host: {{ session.host.username }}</p>
+    <p class="mb-1">Session host: {{ session.host.username|capfirst }}</p>
     {% endif %}
     {% if session.user_list.all %}
         <small>Participant{{ session.user_list.all|pluralize }}: {{ session.user_list_string }}</small>
