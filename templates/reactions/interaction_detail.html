@@ -18,7 +18,7 @@
 <div class="alert alert-secondary" role="alert">
     <h6 class="alert-heading">Use with caution:</h6>
     {% for drug in interaction.secondary_drugs.all %}
-    <p class="mb-0">{{drug.name | capfirst}}</p>
+    <p class="mb-0 opacity-75">{{drug.name | capfirst}}</p>
     {% endfor %}
 </div>
 {% endif %}

@@ -78,7 +78,7 @@
 {% endblock item_loop %}
 {% block javascript %}
 <script>
-    const autocomplete_url = " {% url 'list-contents' %}";
+    const autocomplete_url = "{% url 'list-contents' %}";
     const ticket_url = "{% url 'ticket-create' %}";
 </script>
 <script src='{% static 'js/ticket.js' %}'></script>

@@ -15,7 +15,7 @@
 {% block item_loop %}
 {% if interactions %}
 <h6 class="text-muted">Contraindicated in:</h6>
-<div class="list-group">
+<div class="list-group pb-2">
     {% for interaction in interactions %}
     <a href="{{interaction.get_absolute_url}}"
         class="list-group-item list-group-item-action list-group-item-primary d-flex gap-3 py-3" aria-current="true">
