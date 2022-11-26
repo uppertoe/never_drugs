@@ -10,14 +10,14 @@
         <div class="col-8">
         <h5 class="mb-1">Meeting on {{ session.date_created | date:"l j/n/Y" }}</h5>
         </div>
-        {% if session.open or session.interaction_reviews.all %}
+        {% if session.open or session.reviews.all %}
         <div class="col-4 text-end">
         {% if session.open %}
         <span class="badge bg-danger rounded-pill">Live</span>
         {% endif %}
-        {% if session.interaction_reviews.all %}
+        {% if session.reviews.all %}
         <span class="badge bg-dark rounded-pill ms-1">
-            {{ session.interaction_reviews.all.count }} Article{{ session.interaction_reviews.all.count|pluralize }}
+            {{ session.reviews.all.count }} Article{{ session.reviews.all.count|pluralize }}
         </span>
         {% endif %}
         </div>
@@ -37,7 +37,7 @@
 {% block right_col %}
 <div class="pt-2 pt-md-3" id="display-pane">
     {% with session_list|first as session %}
-    {% with session.interaction_reviews.all as review_list%}
+    {% with session.reviews.all as review_list%}
     {% include 'review/fragments/review_preview.html' %}
     {% endwith %}
     {% endwith %}

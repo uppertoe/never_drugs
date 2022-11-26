@@ -17,26 +17,33 @@ class Source(models.Model):
         verbose_name='Article title')
     publication = models.CharField(
         max_length=255,
-        blank=False,
+        blank=True,
+        null=True,
         verbose_name='Journal or publication name')
     reference = models.TextField(
-        max_length=1023,
+        max_length=2055,
         blank=True,
+        null=True,
         verbose_name='Full reference')
     year = models.IntegerField(
         blank=True,
         null=True,
         verbose_name='Year of publication')
-    url = models.URLField(max_length=200, blank=True)
+    url = models.URLField(
+        max_length=255,
+        blank=True,
+        null=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
         related_name='source_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
         related_name='source_edited_by')
 
     def __str__(self):
@@ -45,15 +52,19 @@ class Source(models.Model):
 
 class DrugClass(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField(max_length=1023, blank=True)
+    description = models.TextField(
+        blank=True,
+        null=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
         related_name='drug_class_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
         related_name='drug_class_edited_by')
 
@@ -63,7 +74,10 @@ class DrugClass(models.Model):
 
 class Drug(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    aliases = models.CharField(max_length=1023, blank=True)
+    aliases = models.CharField(
+        max_length=1023,
+        blank=True,
+        null=True)
     slug = models.SlugField(
         null=False,
         unique=True,
@@ -75,11 +89,13 @@ class Drug(models.Model):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
         related_name='drug_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
         related_name='drug_edited_by')
 
@@ -112,15 +128,46 @@ class Condition(models.Model):
         (MODIFY, 'Requires modifications, then re-review'),
         (MOD_THEN_ACCEPT, 'Accepted after minor changes'),
         (ACCEPT, 'Accepted'), ]
-    
-    name = models.CharField(max_length=255, unique=True)
-    aliases = models.CharField(max_length=1023, blank=True)
-    slug = models.SlugField(null=False, unique=True, verbose_name='URL title')
-    description = models.TextField(max_length=1023, blank=True)
+
+    # Evidence level choices
+    L1 = 'L1'
+    L2 = 'L2'
+    L3 = 'L3'
+    L4 = 'L4'
+    L5 = 'L5'
+    L6 = 'L6'
+    L7 = 'L7'
+    evidence_choices = [
+        (L1, 'Systematic review of RCTs'),
+        (L2, 'Well-designed RCT'),
+        (L3, 'Well-designed controlled study without randomisation'),
+        (L4, 'Well designed case-control or cohort studies'),
+        (L5, 'Reviews of qualitative studies'),
+        (L6, 'Single qualitative study'),
+        (L7, 'Expert body opinion'), ]
+
+    name = models.CharField(
+        max_length=255,
+    unique=True)
+    aliases = models.CharField(
+        max_length=1023,
+        blank=True,
+        null=True)
+    slug = models.SlugField(
+        null=False,
+        unique=True,
+        verbose_name='URL title')
+    description = MarkdownxField(
+        blank=True,
+        null=True)
     sources = models.ManyToManyField(
         Source,
         related_name='condition_sources',
         blank=True)
+    evidence = models.CharField(
+        max_length=2,
+        choices=evidence_choices,
+        default=L7)
     ready_for_peer_review = models.BooleanField(
         default=False,
         verbose_name='Ready for peer review?')
@@ -136,16 +183,21 @@ class Condition(models.Model):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
         related_name='condition_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
         related_name='condition_edited_by')
 
     class Meta:
         ordering = ['name']
+
+    def description_markdown(self):
+        return markdownify(self.description if self.description else '')
 
     def get_absolute_url(self):
         return reverse('condition_detail', kwargs={'slug': self.slug})
@@ -166,34 +218,6 @@ class Interaction(models.Model):
         (MODERATE, 'Moderate'),
         (SEVERE, 'Severe'), ]
 
-    # Evidence level choices
-    L1 = 'L1'
-    L2 = 'L2'
-    L3 = 'L3'
-    L4 = 'L4'
-    L5 = 'L5'
-    L6 = 'L6'
-    L7 = 'L7'
-    evidence_choices = [
-        (L1, 'Systematic review of RCTs'),
-        (L2, 'Well-designed RCT'),
-        (L3, 'Well-designed controlled study without randomisation'),
-        (L4, 'Well designed case-control or cohort studies'),
-        (L5, 'Reviews of qualitative studies'),
-        (L6, 'Single qualitative study'),
-        (L7, 'Expert body opinion'), ]
-
-    # Peer review choices
-    DRAFT = 'DR'
-    MODIFY = 'MO'
-    MOD_THEN_ACCEPT = 'AM'
-    ACCEPT = 'AC'
-    peer_review_choices = [
-        (DRAFT, 'Draft'),
-        (MODIFY, 'Requires modifications, then re-review'),
-        (MOD_THEN_ACCEPT, 'Accepted after minor changes'),
-        (ACCEPT, 'Accepted'), ]
-
     # Link for Markdown field helptext
     markdown_field_helptext = "Add basic formatting using "
     markdown_link = "https://www.markdownguide.org/cheat-sheet/"
@@ -201,15 +225,24 @@ class Interaction(models.Model):
     markdown_field_post_helptext = "A live preview of formatted content \
         is shown next to the input field"
 
+    # Helptext
+    include_article_helptext = "Include this article if many conditions \
+        lead to the same endpoint (i.e. malignant hyperthermia)"
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
     name = models.CharField(max_length=255, blank=False)
+    slug = models.SlugField(
+        verbose_name='URL title',
+        null=True,
+        blank=True)  # Make null=False, unique=True, once migrated
     conditions = models.ManyToManyField(
         Condition,
         related_name='interactions',
-        verbose_name="Conditions strongly linked with the interaction")
+        verbose_name="Conditions strongly linked with the interaction",
+        blank=True)
     secondary_conditions = models.ManyToManyField(
         Condition,
         related_name='secondary_condition_interactions',
@@ -226,6 +259,8 @@ class Interaction(models.Model):
         verbose_name='Drugs to use with caution',
         blank=True)
     description = MarkdownxField(
+        blank=True,
+        null=True,
         help_text=format_html(
             '{}<a href="{}" target="_blank" \
                 rel="noopener noreferrer">{}</a><br>{}',
@@ -238,39 +273,31 @@ class Interaction(models.Model):
         max_length=2,
         choices=severity_choices,
         default=NA)
-    evidence = models.CharField(
-        max_length=2,
-        choices=evidence_choices,
-        default=L7)
     sources = models.ManyToManyField(
         Source,
         related_name='interaction_sources',
         blank=True)
-    ready_for_peer_review = models.BooleanField(
+    include_article = models.BooleanField(
         default=False,
-        verbose_name='Ready for peer review?')
-    peer_review_status = models.CharField(
-        max_length=2,
-        choices=peer_review_choices,
-        default=DRAFT)
-    ready_to_publish = models.BooleanField(
-        default=False,
-        verbose_name='Ready to publish?')  # False excludes from search
+        verbose_name='Include this article on the website?',
+        help_text=include_article_helptext)  # False excludes from search
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
         related_name='interaction_created_by')
     last_edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        blank=True,
         null=True,
         related_name='interaction_edited_by')
 
     def description_markdown(self):
-        return markdownify(self.description)
+        return markdownify(self.description if self.description else '')
 
     def get_bootstrap_alert_colour(self):
         # chooses bootstrap alert colour based on interaction.severity

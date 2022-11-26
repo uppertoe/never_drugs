@@ -24,22 +24,22 @@
     <div class="row align-items-top d-flex">
         <div class="col-12">
             <div class="pb-3">
-                <h1 class="display-5 fw-bold mb-3 text-break">Article: {{ review.interaction.name | capfirst }}</h1>
-                <small class="text-muted">Author: {{review.interaction.created_by|capfirst}}</small><br>
-                <small class="text-muted">Last edited by {{review.interaction.last_edited_by|capfirst}} on {{ review.interaction.date_modified }}</small>
+                <h1 class="display-5 fw-bold mb-3 text-break">Article: {{ review.condition.name | capfirst }}</h1>
+                <small class="text-muted">Author: {{review.condition.created_by|capfirst}}</small><br>
+                <small class="text-muted">Last edited by {{review.condition.last_edited_by|capfirst}} on {{ review.condition.date_modified }}</small>
             </div>
-            {% if review.interaction.drugs.all %}
+            {% if review.condition.drugs.all %}
             <div class="alert alert-primary px-4 px-md-5" role="alert">
                 <h6 class="alert-heading">Contraindicated:</h6>
-                {% for drug in review.interaction.drugs.all %}
+                {% for drug in review.condition.drugs.all %}
                 <p class=" mb-0">{{drug.name | capfirst}}</p>
                 {% endfor %}
             </div>
             {% endif %}
-            {% if review.interaction.secondary_drugs.all %}
+            {% if review.condition.secondary_drugs.all %}
             <div class="alert alert-secondary px-4 px-md-5" role="alert">
                 <h6 class="alert-heading">Use with caution:</h6>
-                {% for drug in review.interaction.secondary_drugs.all %}
+                {% for drug in review.condition.secondary_drugs.all %}
                 <p class="mb-0">{{drug.name | capfirst}}</p>
                 {% endfor %}
             </div>
@@ -47,23 +47,23 @@
         </div>
         <div class="col-12">
             <div class="p-4 p-md-5 border rounded-3 bg-light">
-                {% if review.interaction.conditions.all %}
+                {% if review.condition.conditions.all %}
                 <div class="mb-3">
                     <h4>Susceptible conditions:</h4>
-                    <p>{{ review.interaction.get_condition_string | capfirst }}</p>
+                    <p>{{ review.condition.get_condition_string | capfirst }}</p>
                 </div>
                 {% endif %}
-                {% if review.interaction.secondary_conditions.all %}
+                {% if review.condition.secondary_conditions.all %}
                 <div class="mb-3">
                     <h4>Theoretically associated conditions:</h4>
-                    <p>{{ review.interaction.get_secondary_condition_string | capfirst }}</p>
+                    <p>{{ review.condition.get_secondary_condition_string | capfirst }}</p>
                 </div>
                 {% endif %}
                 <div class="mb-3">
                     <h4>Description:</h4>
-                    <p>{{ review.interaction.description_markdown|safe }}</p>
+                    <p>{{ review.condition.description_markdown|safe }}</p>
                 </div>
-                {% if review.interaction.sources.all %}
+                {% if review.condition.sources.all %}
                 <hr class="my-4">
                 <h6 class="text-muted"></h6>
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse"
@@ -72,7 +72,7 @@
                 </button>
                 <div class="collapse" id="source-list">
                     <div class="row">
-                        {% for source in review.interaction.sources.all %}
+                        {% for source in review.condition.sources.all %}
                         <div class="col-12">
                             <div class="card mt-3">
                                 <div class="card-body">

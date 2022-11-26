@@ -48,9 +48,8 @@ class InteractionAdmin(SaveAuthorMixin, admin.ModelAdmin):
         'name',
         'get_condition_list',
         'get_drug_list',
-        'ready_to_publish',
-        'ready_for_peer_review')
-    list_editable = ('ready_to_publish', 'ready_for_peer_review')
+        'include_article')
+    list_editable = ('include_article',)
     list_filter = ('created_by', 'last_edited_by')
     filter_horizontal = (
         'conditions',
@@ -58,8 +57,9 @@ class InteractionAdmin(SaveAuthorMixin, admin.ModelAdmin):
         'drugs',
         'secondary_drugs',
         'sources')
+    prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name',)
-    readonly_fields = ('created_by', 'last_edited_by', 'peer_review_status')
+    readonly_fields = ('created_by', 'last_edited_by')
 
     def get_queryset(self, request):  # Prefetch many-many query
         qs = super().get_queryset(request)

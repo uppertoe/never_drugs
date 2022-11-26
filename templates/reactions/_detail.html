@@ -1,0 +1,27 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-top d-flex">
+
+        {# Left Column #}
+        <div class="col-md-6 col-lg-4">
+            <h1 class="display-5 fw-bold lh-1 mb-3 text-break">{% block article_name %}{% endblock article_name %}</h1>
+            <h6>{% block article_aliases %}{% endblock article_aliases %}</small>
+            <p class="opacity-75">{% block article_modified %}{% endblock article_modified %}</small>
+            <hr class="my-4">
+            {% block item_loop %}
+            {% endblock item_loop %}
+        </div>
+        {# Right Column #}
+        <div class="px-md-4 col-md-6 col-lg-8">
+            <div class="p-4 p-md-5 border rounded-3 bg-light">
+                <div class="mb-3">
+                {% block article_body %}{% endblock article_body %}
+                </div>
+                {% block sources %}{% endblock sources %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

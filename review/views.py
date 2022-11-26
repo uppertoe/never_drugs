@@ -22,17 +22,14 @@ class SessionCreateView(CreateView):
         return reverse_lazy('session_detail', kwargs={'pk': self.object.id})
 
 
-def session_create_view(request):
-    pass
-
-
 class SessionListView(LoginRequiredMixin, ListView):
     model = ReviewSession
     context_object_name = 'session_list'
     template_name = 'review/session_list.html'
-    queryset = ReviewSession.objects.all().order_by('-date_created').prefetch_related(
-        'interaction_reviews', 'user_list', 'host'
-    )
+    queryset = (
+        ReviewSession.objects.all()
+        .order_by('-date_created')
+        .prefetch_related('reviews', 'user_list', 'host'))
 
 
 def ajax_review_detail_view(request):
@@ -55,8 +52,8 @@ def ajax_review_detail_view(request):
     session = get_object_or_404(ReviewSession, pk=id)
     # Find the other reviews associated with this ReviewSession
     associated_reviews = Review.objects.filter(
-        interaction_reviews=session
-        ).prefetch_related('interaction')
+        reviews=session
+        ).prefetch_related('condition')
     context = associated_reviews
 
     # Render to HTML
@@ -78,8 +75,8 @@ class SessionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reviews'] = (
-            self.object.interaction_reviews.all()
-            .prefetch_related('interaction')
+            self.object.reviews.all()
+            .prefetch_related('condition')
         )
         return context
 
@@ -94,7 +91,7 @@ class SessionEditView(UpdateView):
     model = ReviewSession
     context_object_name = 'session'
     template_name = 'review/session_edit.html'
-    fields = ['interaction_reviews', 'open', 'host', 'user_list']
+    fields = ['reviews', 'open', 'host', 'user_list']
 
 
 class ReviewListView(ListView):
@@ -126,7 +123,7 @@ class ReviewDetailView(LoginRequiredMixin, DetailView):
         Allocates host or non-host template accordingly
         '''
         session_id_dict = {}
-        for session in self.object.interaction_reviews.all():
+        for session in self.object.reviews.all():
             session_id_dict.update({session.id: session.host})
         session_host = session_id_dict.get(self.current_session_id, '')
         if self.request.user == session_host:
@@ -178,7 +175,7 @@ def ajax_save_review_session(request):
         review = get_object_or_404(Review, id=review_id)
 
         # Check whether the Review is in the current ReviewSession
-        if review not in current_session.interaction_reviews.all():
+        if review not in current_session.reviews.all():
             return JsonResponse({'status': 'Forbidden'}, status=401)
 
         # Ensure the review.update is current
@@ -225,7 +222,7 @@ def ajax_revert_review(request):
         review = get_object_or_404(Review, id=review_id)
 
         # Check whether the Review is in the current ReviewSession
-        if review not in current_session.interaction_reviews.all():
+        if review not in current_session.reviews.all():
             return JsonResponse({'status': 'Forbidden'}, status=401)
 
         # Revert the Review.update to the saved Review.comment
@@ -297,7 +294,7 @@ def ajax_auto_update_review(request):
         review = get_object_or_404(Review, id=review_id)
 
         # Check whether the Review is in the current ReviewSession
-        if review not in current_session.interaction_reviews.all():
+        if review not in current_session.reviews.all():
             return JsonResponse({'status': 'Forbidden'}, status=401)
 
         # Ensure the review.update is current

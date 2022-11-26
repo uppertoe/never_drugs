@@ -5,7 +5,7 @@ from django.urls import reverse
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 
-from reactions.models import Interaction
+from reactions.models import Condition
 
 
 class Review(models.Model):
@@ -13,9 +13,9 @@ class Review(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    interaction = models.ForeignKey(
-        Interaction,
-        related_name='interaction',
+    condition = models.ForeignKey(
+        Condition,
+        related_name='Condition',
         on_delete=models.CASCADE)
     comment = MarkdownxField(blank=True, null=True)
     update = MarkdownxField(blank=True, null=True)
@@ -24,17 +24,17 @@ class Review(models.Model):
     actioned = models.BooleanField(default=False)
 
     def comment_markdown(self):
-        return markdownify(self.comment)
+        return markdownify(self.comment if self.comment else '')
 
     def update_markdown(self):
-        return markdownify(self.update)
+        return markdownify(self.update if self.update else '')
 
     def get_absolute_url(self):
         return reverse("review_detail", kwargs={"pk": self.id})
 
     def __str__(self):
-        name = self.interaction.name.capitalize()
-        author = self.interaction.created_by.username.capitalize()
+        name = self.condition.name.capitalize()
+        author = self.condition.created_by.username.capitalize()
         return f'\'{name}\' by {author}'
 
 
@@ -43,10 +43,10 @@ class ReviewSession(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
-    interaction_reviews = models.ManyToManyField(
+    reviews = models.ManyToManyField(
         Review,
-        related_name='interaction_reviews',
-        verbose_name='Interactions for peer review',
+        related_name='reviews',
+        verbose_name='Articles for peer review',
         blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -66,7 +66,8 @@ class ReviewSession(models.Model):
         related_name='user_list')
 
     def user_list_string(self):
-        return ', '.join(user.username.capitalize() for user in self.user_list.all())
+        users = self.user_list.all()
+        return ', '.join(user.username.capitalize() for user in users)
 
     def get_ajax_url(self):
         return reverse("ajax_review_detail") + f"?id={self.id}"

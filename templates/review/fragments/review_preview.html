@@ -16,16 +16,16 @@
 {% endif %}
 {% for review in review_list.all %}
 <div class="card mb-2">
-    <h5 class="card-header">Article status: {{ review.interaction.get_peer_review_status_display|lower }}</h5>
+    <h5 class="card-header">Article status: {{ review.condition.get_peer_review_status_display|lower }}</h5>
     <div class="card-body">
-        <h5 class="card-title">{{ review.interaction.name | capfirst}}</h5>
+        <h5 class="card-title">{{ review.condition.name | capfirst}}</h5>
         <p>
-            <span class="card-text">Author: {{ review.interaction.created_by|capfirst }}<br></span>
-            <span class="card-text">Last modified by: {{ review.interaction.last_edited_by|capfirst }}<br></span>
+            <span class="card-text">Author: {{ review.condition.created_by|capfirst }}<br></span>
+            <span class="card-text">Last modified by: {{ review.condition.last_edited_by|capfirst }}<br></span>
         </p>
         <p class="text-muted small">{{ review.date_created }}</p>
         <button type="button" data-bs-toggle="modal" data-bs-target="#modal-{{ review.id }}" class="btn btn-outline-primary" aria-labelledby="label-{{ review.id}}" aria-hidden="true">Recommendations</button>
-        <a href="{{ review.interaction.get_absolute_url }}" target="_blank" class="btn btn-outline-secondary">Article</a>
+        <a href="{{ review.condition.get_absolute_url }}" target="_blank" class="btn btn-outline-secondary">Article</a>
     </div>
 </div>
 
@@ -33,7 +33,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="label-{{ review.id }}">{{ review.interaction.name }}</h5>
+          <h5 class="modal-title" id="label-{{ review.id }}">{{ review.condition.name }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

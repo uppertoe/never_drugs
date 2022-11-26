@@ -8,7 +8,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 class ReviewSessionAdmin(admin.ModelAdmin):
-    filter_horizontal = ('interaction_reviews', 'user_list')
+    filter_horizontal = ('reviews', 'user_list')
 
 
 admin.site.register(Review, ReviewAdmin)

@@ -9,13 +9,13 @@ class InteractionForReviewForm(forms.ModelForm):
     '''
     class Meta:
         model = ReviewSession
-        fields = ['interaction_reviews', 'host', 'open']
+        fields = ['reviews', 'host', 'open']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['interaction_reviews'].queryset = (
+        self.fields['reviews'].queryset = (
             Review.objects  # Exclude accepted articles
-            .filter(interaction__ready_for_peer_review=True)
-            .exclude(interaction__peer_review_status='AC')
+            .filter(condition__ready_for_peer_review=True)
+            .exclude(condition__peer_review_status='AC')
+            .exclude(actioned=True)
             )
-

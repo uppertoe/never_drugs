@@ -1,0 +1,27 @@
+{% load static %}
+
+{% if interaction.include_article %}
+<a href={{interaction.get_absolute_url}} class="list-group-item list-group-item-action list-group-item-{{alert|default:"primary"}} d-flex gap-3 py-3" aria-current="true">
+    <img src="{% static 'images/link-45deg.svg' %}" alt="link" width="32" height="32" class=" flex-shrink-0">
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+            <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
+            {% for drug in interaction.drugs.all %}
+            <p class="mb-0 opacity-75">{{drug.name | capfirst}}</p>
+            {% endfor %}
+            <small class="opacity-50 text-nowrap">{{condition.date_modified}}</small>
+        </div>
+    </div>
+</a>
+{% else %}
+<div class="list-group-item list-group-item-{{alert|default:"primary"}} d-flex gap-3 py-3" aria-current="true">
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div>
+            <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
+            {% for drug in interaction.drugs.all %}
+            <p class="mb-0 opacity-75">{{drug.name | capfirst}}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}

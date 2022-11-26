@@ -11,7 +11,7 @@
 <div class="list-group pt-3">
     {% for review in reviews %}
     <button class="review-button list-group-item list-group-item-action {% if forloop.first %}active{% endif %}" type="button" id="{{review.id}}">
-        <h5 class="mb-1">{{ review.interaction.name }}</h5>
+        <h5 class="mb-1">{{ review.condition.name }}</h5>
         <small>{{ review.date_created }}</small>
     </button>
     {% endfor %}
@@ -28,9 +28,9 @@
 {% for review in reviews %}
 <div class="review{% if not forloop.first %} hide{%endif%}" id="review-{{review.id}}">
     <div class="card">
-            <h5 class="card-header">Article status: {{review.interaction.get_peer_review_status_display|lower}}</h5>
+            <h5 class="card-header">Article status: {{review.condition.get_peer_review_status_display|lower}}</h5>
         <div class="card-body">
-            <h5 class="card-title">{{ review.interaction.name }} - Peer review</h5>
+            <h5 class="card-title">{{ review.condition.name }} - Peer review</h5>
             <p class="card-text">{{ review.comment_markdown|safe }}</p>
             <a href="{{review.get_absolute_url}}?session_id={{session.id}}" class="btn btn-outline-primary">Join Real-Time Discussion</a>
         </div>

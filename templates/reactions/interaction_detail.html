@@ -1,78 +1,72 @@
-{% extends '_base.html' %}
+{% extends 'reactions/_detail.html' %}
 {% load static %}
 
-{% block content %}
-<div class="container py-5">
-    <div class="row align-items-top d-flex">
-        <div class="col-md-6 col-lg-4">
-            <h1 class="display-5 fw-bold lh-1 mb-3 text-break">{{ interaction.name | capfirst }}</h1>
-            <small class="text-muted">Last modified: {{ interaction.date_modified }}</small>
-            <hr class="my-4">
-            {% if interaction.drugs.all %}
-            <div class="alert alert-primary" role="alert">
-                <h6 class="alert-heading">Contraindicated:</h6>
-                {% for drug in interaction.drugs.all %}
-                <p class=" mb-0">{{drug.name | capfirst}}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% if interaction.secondary_drugs.all %}
-            <div class="alert alert-secondary" role="alert">
-                <h6 class="alert-heading">Use with caution:</h6>
-                {% for drug in interaction.secondary_drugs.all %}
-                <p class="mb-0">{{drug.name | capfirst}}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-        <div class="px-md-4 col-md-6 col-lg-8">
-            <div class="p-4 p-md-5 border rounded-3 bg-light">
-                {% if interaction.conditions.all %}
-                <div class="mb-3">
-                    <h4>Susceptible conditions:</h4>
-                    <p>{{ interaction.get_condition_string | capfirst }}</p>
+{% block article_name %}{{ interaction.name | capfirst }}{% endblock article_name %}
+{% block article_aliases %}{% if interaction.aliases %}Also known as: {{interaction.aliases}}<br>{% endif %}{% endblock article_aliases %}
+{% block article_modified %}Last modified: {{interaction.date_modified}}{% endblock article_modified %}
+
+{% block item_loop %}
+{% if interaction.drugs.all %}
+<div class="alert alert-primary" role="alert">
+    <h6 class="alert-heading">Contraindicated:</h6>
+    {% for drug in interaction.drugs.all %}
+    <p class=" mb-0">{{drug.name | capfirst}}</p>
+    {% endfor %}
+</div>
+{% endif %}
+{% if interaction.secondary_drugs.all %}
+<div class="alert alert-secondary" role="alert">
+    <h6 class="alert-heading">Use with caution:</h6>
+    {% for drug in interaction.secondary_drugs.all %}
+    <p class="mb-0">{{drug.name | capfirst}}</p>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock item_loop %}
+
+{% block article_body %}
+{% if interaction.conditions.all %}
+<div class="alert alert-danger mb-3" role="alert">
+    <h5 class="alert-heading">Susceptible conditions</h4>
+    <p class="mb-0">{{ interaction.get_condition_string | capfirst }}</p>
+  </div>
+{% endif %}
+{% if interaction.secondary_conditions.all %}
+<div class="alert alert-secondary mb-3" role="alert">
+    <h5 class="alert-heading">Theoretically associated conditions</h4>
+    <p class='mb-0'>{{ interaction.get_secondary_condition_string | capfirst }}</p>
+  </div>
+{% endif %}
+{{ interaction.description_markdown|safe }}
+{% endblock article_body %}
+
+{% block sources %}
+{% if interaction.sources.all %}
+<hr class="my-4">
+<h6 class="text-muted"></h6>
+<button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse"
+    data-bs-target="#source-list" aria-expanded="false" aria-controls="source-list">
+    View references
+</button>
+<div class="collapse" id="source-list">
+    <div class="row">
+        {% for source in interaction.sources.all %}
+        <div class="col-12">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ source.name }}</h5>
+                    <p class="card-text">
+                        {{ source.publication }}
+                        {% if source.year %}<small
+                            class='text-muted'>{{ source.year }}</small>{% endif %}
+                    </p>
+                    {% if source.url %}<a href="{{source.url}}"
+                        class="text-decoration-none">{{ source.url }}</a>{% endif %}
                 </div>
-                {% endif %}
-                {% if interaction.secondary_conditions.all %}
-                <div class="mb-3">
-                    <h4>Theoretically associated conditions:</h4>
-                    <p>{{ interaction.get_secondary_condition_string | capfirst }}</p>
-                </div>
-                {% endif %}
-                <div class="mb-3">
-                    <h4>Description:</h4>
-                    <p>{{ interaction.description_markdown|safe }}</p>
-                </div>
-                {% if interaction.sources.all %}
-                <hr class="my-4">
-                <h6 class="text-muted"></h6>
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#source-list" aria-expanded="false" aria-controls="source-list">
-                    View references
-                </button>
-                <div class="collapse" id="source-list">
-                    <div class="row">
-                        {% for source in interaction.sources.all %}
-                        <div class="col-12">
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ source.name }}</h5>
-                                    <p class="card-text">
-                                        {{ source.publication }}
-                                        {% if source.year %}<small
-                                            class='text-muted'>{{ source.year }}</small>{% endif %}
-                                    </p>
-                                    {% if source.url %}<a href="{{source.url}}"
-                                        class="text-decoration-none">{{ source.url }}</a>{% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
             </div>
         </div>
+        {% endfor %}
     </div>
 </div>
-{% endblock content %}
+{% endif %}
+{% endblock sources %}
