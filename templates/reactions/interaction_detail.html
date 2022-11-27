@@ -37,14 +37,18 @@
     <p class='mb-0'>{{ interaction.get_secondary_condition_string | capfirst }}</p>
   </div>
 {% endif %}
-{{ interaction.description_markdown|safe }}
+<div class="card">
+    <div class="card-body">
+        {{ interaction.description_markdown|safe }}
+    </div>
+</div>
 {% endblock article_body %}
 
 {% block sources %}
 {% if interaction.sources.all %}
 <hr class="my-4">
 <h6 class="text-muted"></h6>
-<button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse"
+<button class="btn btn-outline-primary mt-3" type="button" data-bs-toggle="collapse"
     data-bs-target="#source-list" aria-expanded="false" aria-controls="source-list">
     View references
 </button>

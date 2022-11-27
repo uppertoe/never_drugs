@@ -25,12 +25,16 @@
 {% endblock item_loop %}
 
 {% block article_body %}
-{{ condition.description_markdown|safe }}
+<div class="card">
+    <div class="card-body">
+        {{ condition.description_markdown|safe }}
+    </div>
+</div>
 {% endblock article_body %}
 
 {% block sources %}
 {% if condition.sources.all %}
-<button class="btn btn-outline-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#source-list"
+<button class="btn btn-outline-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#source-list"
     aria-expanded="false" aria-controls="source-list">
     View references
 </button>
