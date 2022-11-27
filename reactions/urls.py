@@ -8,24 +8,24 @@ from .views import (
 
 urlpatterns = [
     path(
-        'drug/',
+        'drugs/',
         DrugListView.as_view(),
         name='drug_list'),
     path(
-        'drug/<slug:slug>',
+        'drugs/<slug:slug>',
         DrugDetailView.as_view(),
         name='drug_detail'),
     path(
-        'condition/',
+        'conditions/',
         ConditionListView.as_view(),
         name='condition_list'),
     path(
-        'condition/<slug:slug>',
+        'conditions/<slug:slug>',
         ConditionDetailView.as_view(),
         name='condition_detail'),
     path(
         # <str:str> populated from query but not required for path
-        'interaction/<str:str>/<uuid:pk>',
+        'interactions/<str:str>/<uuid:pk>',
         InteractionDetailView.as_view(),
         name='interaction_detail'),
     path(
@@ -33,7 +33,7 @@ urlpatterns = [
         search_view,
         name='search'),
     path(
-        'interaction/',
+        'interactions/',
         RedirectView.as_view(url='/search/')),
     path(
         # AJAX operation for URL-specific per-view cache
