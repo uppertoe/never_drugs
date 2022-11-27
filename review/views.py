@@ -14,7 +14,7 @@ from .models import Review, ReviewSession
 from .forms import InteractionForReviewForm, ConditionPeerReviewStatusForm
 
 
-class SessionCreateView(CreateView):
+class SessionCreateView(LoginRequiredMixin, CreateView):
     model = ReviewSession
     form_class = InteractionForReviewForm
     template_name = 'review/session_create.html'
@@ -33,7 +33,7 @@ class SessionListView(LoginRequiredMixin, ListView):
         .prefetch_related('reviews', 'user_list', 'host'))
 
 
-class SessionLatestView(RedirectView):
+class SessionLatestView(LoginRequiredMixin, RedirectView):
     # Redirect to the last created ReviewSession
     permanent = False
     query_string = False
@@ -76,7 +76,7 @@ def ajax_review_detail_view(request):
     return JsonResponse({'html': html})
 
 
-class SessionDetailView(DetailView):
+class SessionDetailView(LoginRequiredMixin, DetailView):
     '''
     Displays the Session from which users can select Reviews
     '''
@@ -100,14 +100,14 @@ class SessionDetailView(DetailView):
         return obj
 
 
-class SessionEditView(UpdateView):
+class SessionEditView(LoginRequiredMixin, UpdateView):
     model = ReviewSession
     context_object_name = 'session'
     template_name = 'review/session_edit.html'
     fields = ['reviews', 'open', 'host', 'user_list']
 
 
-class ReviewListView(ListView):
+class ReviewListView(LoginRequiredMixin, ListView):
     model = Review
     context_object_name = 'review_list'
     template_name = 'review/review_list.html'
