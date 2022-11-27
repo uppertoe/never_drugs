@@ -2,6 +2,7 @@
 const review_textarea = document.getElementById('reviewCommentTextarea');
 const connection = document.getElementById('connection');
 const user_list = document.getElementById('userList');
+const text_peer_review = document.getElementById('textPeerReview')
 
 // Variables
 const auto_update_delay_ms = 500;
@@ -36,6 +37,7 @@ function autoUpdate() {
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
+            text_peer_review.innerText = data.peer_review_status
             if (data.user_list_html) { // implies session_id has been passed
                 user_list.innerHTML = data.user_list_html;
                 connected();

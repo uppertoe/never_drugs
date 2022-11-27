@@ -11,6 +11,9 @@
         {% endif %}
     </div>
 </div>
+<div class="pt-3">
+<span class="h6">Peer review status: </span><span id="textPeerReview">{{review.condition.get_peer_review_status_display}}</span></p>
+</div>
 {% endblock textbox %}
 
 {% block javascript %}

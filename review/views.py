@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Review, ReviewSession
-from .forms import InteractionForReviewForm
+from .forms import InteractionForReviewForm, ConditionPeerReviewStatusForm
 
 
 class SessionCreateView(CreateView):
@@ -117,6 +117,7 @@ class ReviewDetailView(LoginRequiredMixin, DetailView):
     model = Review
     context_object_name = 'review'
     current_session_id = None
+    form_class = ConditionPeerReviewStatusForm
 
     def get(self, request, *args, **kwargs):
         # Check whether a valid UUID was passed
@@ -127,6 +128,13 @@ class ReviewDetailView(LoginRequiredMixin, DetailView):
             except ValueError:
                 print(f'Invalid UUID provided in GET: {session_id}')
         return super().get(self, request, *args, **kwargs)
+
+    def get_form(self):
+        # Ensure that a new Condition is not created
+        if self.object.condition:
+            form = self.form_class(instance=self.object.condition)
+            return form
+        return print(f'Error: no associated condition for review {self.object}')
 
     def get_template_names(self):
         '''
@@ -154,6 +162,8 @@ class ReviewDetailView(LoginRequiredMixin, DetailView):
             except ReviewSession.DoesNotExist:
                 message = 'No match for ReviewSession GET parameter'
                 print(f'{message}: {self.current_session_id}')
+        # Add the form to the context
+        context['peer_review_form'] = self.get_form()
         return context
 
 
@@ -195,6 +205,15 @@ def ajax_save_review_session(request):
         latest_comment = data.get("latest_comment")
         review.update = latest_comment
         review.last_ajax = datetime.datetime.now()
+
+        # Update (but do not create) the peer review status
+        if review.condition:
+            peer_review_form = data.get("peer_review_form")
+            form = ConditionPeerReviewStatusForm(
+                {'peer_review_status': peer_review_form},
+                instance=review.condition,
+                )
+            form.save()
 
         # Replace the comment with the updated comment
         review.comment = latest_comment
@@ -286,7 +305,8 @@ def ajax_auto_update_review(request):
             'status': 'Retrieval Successful',
             'latest_comment_html': latest_comment_markdown,
             'revert_text_html': revert_text_html,
-            'user_list_html': update_user_list(session_id)
+            'user_list_html': update_user_list(session_id),
+            'peer_review_status': review.condition.get_peer_review_status_display()
             }
         return JsonResponse(response, status=200)
 

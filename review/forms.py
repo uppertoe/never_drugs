@@ -1,5 +1,5 @@
 from django import forms
-
+from reactions.models import Condition
 from .models import ReviewSession, Review
 
 
@@ -19,3 +19,10 @@ class InteractionForReviewForm(forms.ModelForm):
             .exclude(condition__peer_review_status='AC')
             .exclude(actioned=True)
             )
+
+
+class ConditionPeerReviewStatusForm(forms.ModelForm):
+    class Meta:
+        model = Condition
+        fields = ['peer_review_status']
+        widgets = {'peer_review_status': forms.Select(attrs={'id': 'selectPeerReviewStatus'})}

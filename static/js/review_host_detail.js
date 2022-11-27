@@ -1,5 +1,6 @@
 // Elements
 const review_textarea = document.getElementById('reviewTextarea');
+const select_peer_review_status = document.getElementById('selectPeerReviewStatus');
 const btn_save = document.getElementById('btnSave');
 const btn_revert = document.getElementById('btnRevert');
 const revert_text = document.getElementById('revertComment');
@@ -59,6 +60,7 @@ function getData() {
         'review_id': review_id,
         'session_id': session_id,
         'latest_comment': review_textarea.value,
+        'peer_review_form': select_peer_review_status.value,
     }
     return JSON.stringify(data);
 }
