@@ -3,6 +3,7 @@ import json
 import datetime
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.base import RedirectView
 from django.http import HttpResponseBadRequest, JsonResponse, Http404
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
@@ -30,6 +31,18 @@ class SessionListView(LoginRequiredMixin, ListView):
         ReviewSession.objects.all()
         .order_by('-date_created')
         .prefetch_related('reviews', 'user_list', 'host'))
+
+
+class SessionLatestView(RedirectView):
+    # Redirect to the last created ReviewSession
+    permanent = False
+    query_string = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        session = ReviewSession.objects.all().order_by('-date_created').first()
+        if not session:
+            raise Http404
+        return session.get_absolute_url()
 
 
 def ajax_review_detail_view(request):

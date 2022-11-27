@@ -148,7 +148,7 @@ class Condition(models.Model):
 
     name = models.CharField(
         max_length=255,
-    unique=True)
+        unique=True)
     aliases = models.CharField(
         max_length=1023,
         blank=True,
@@ -197,7 +197,8 @@ class Condition(models.Model):
         ordering = ['name']
 
     def description_markdown(self):
-        return markdownify(self.description if self.description else '')
+        # Replace NoneType with '' if empty
+        return markdownify(self.description) if self.description else ''
 
     def get_absolute_url(self):
         return reverse('condition_detail', kwargs={'slug': self.slug})
@@ -297,7 +298,8 @@ class Interaction(models.Model):
         related_name='interaction_edited_by')
 
     def description_markdown(self):
-        return markdownify(self.description if self.description else '')
+        # Replace NoneType with '' if empty
+        return markdownify(self.description) if self.description else ''
 
     def get_bootstrap_alert_colour(self):
         # chooses bootstrap alert colour based on interaction.severity

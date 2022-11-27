@@ -23,11 +23,14 @@ class Review(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     actioned = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['-date_created']
+
     def comment_markdown(self):
-        return markdownify(self.comment if self.comment else '')
+        return markdownify(self.comment) if self.comment else ''
 
     def update_markdown(self):
-        return markdownify(self.update if self.update else '')
+        return markdownify(self.update) if self.update else ''
 
     def get_absolute_url(self):
         return reverse("review_detail", kwargs={"pk": self.id})
@@ -64,6 +67,9 @@ class ReviewSession(models.Model):
         verbose_name='Users present during the peer review session',
         blank=True,
         related_name='user_list')
+
+    class Meta:
+        ordering = ['-date_created']
 
     def user_list_string(self):
         users = self.user_list.all()
