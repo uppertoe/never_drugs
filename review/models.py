@@ -17,8 +17,8 @@ class Review(models.Model):
         Condition,
         related_name='Condition',
         on_delete=models.CASCADE)
-    comment = MarkdownxField(blank=True, null=True)
-    update = MarkdownxField(blank=True, null=True)
+    comment = MarkdownxField(blank=True, null=True, default='')
+    update = MarkdownxField(blank=True, null=True, default='')
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     actioned = models.BooleanField(default=False)
