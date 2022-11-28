@@ -114,6 +114,8 @@ class ReviewListView(LoginRequiredMixin, ListView):
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):
+    # Call get_form() in get_context_data to provide initial values
+    # form.save() is handled in ajax_save_review_session()
     model = Review
     context_object_name = 'review'
     current_session_id = None

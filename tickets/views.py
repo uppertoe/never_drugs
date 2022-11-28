@@ -33,8 +33,8 @@ class TicketCreateView(JsonableResponseMixin, CreateView):
             response = super().form_valid(form)
         else:
             response = super().form_valid(form)
-            # Store (serializable) UUID as string
-            # in session['ticket'] dictionary
-            self.request.session['ticket'] = \
-                self.request.session.get('ticket', []) + [str(self.object.pk)]
+            # Add ticket.id (UUID) to session['ticket'] -> list of strings
+            id = [str(self.object.pk)]  # Convert UUID to [str]
+            ticket = self.request.session.get('ticket', []) + id
+            self.request.session['ticket'] = ticket
         return response
