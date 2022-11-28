@@ -7,8 +7,8 @@
         {# Left Column #}
         <div class="col-md-6 col-lg-4">
             <h1 class="display-5 fw-bold lh-1 mb-3">{% block article_name %}{% endblock article_name %}</h1>
-            <h6>{% block article_aliases %}{% endblock article_aliases %}</small>
-            <p class="opacity-75">{% block article_modified %}{% endblock article_modified %}</small>
+            <h6 class="mb-0">{% block article_aliases %}{% endblock article_aliases %}</h6>
+            <p class="opacity-75">{% block article_modified %}{% endblock article_modified %}</p>
             <hr class="my-4">
             {% block item_loop %}
             {% endblock item_loop %}

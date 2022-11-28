@@ -7,7 +7,7 @@
 
 {% block item_loop %}
 {% if interactions %}
-<h6 class="text-muted">Strongly associated with:</h6>
+<h6 class="text-muted">Strong association with:</h6>
 <div class="list-group pb-2">
     {% for interaction in interactions %}
     {% include 'reactions/fragments/interaction_list_group.html' with alert="primary" %}
