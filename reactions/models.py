@@ -9,6 +9,13 @@ from django.utils.html import format_html
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 
+# Link for Markdown field helptext
+markdown_field_helptext = "Add basic formatting using "
+markdown_link = "https://www.markdownguide.org/cheat-sheet/"
+markdown_link_text = "Markdown (cheat sheet)"
+markdown_field_post_helptext = "A live preview of formatted content \
+    is shown next to the input field"
+
 
 class Source(models.Model):
     name = models.CharField(
@@ -159,7 +166,15 @@ class Condition(models.Model):
         verbose_name='URL title')
     description = MarkdownxField(
         blank=True,
-        null=True)
+        null=True,
+        verbose_name='Article body',
+        help_text=format_html(
+            '{}<a href="{}" target="_blank" rel="noopener noreferrer">{}</a><br>{}',
+            markdown_field_helptext,
+            markdown_link,
+            markdown_link_text,
+            markdown_field_post_helptext)
+    )
     sources = models.ManyToManyField(
         Source,
         related_name='condition_sources',
@@ -219,13 +234,6 @@ class Interaction(models.Model):
         (MODERATE, 'Moderate'),
         (SEVERE, 'Severe'), ]
 
-    # Link for Markdown field helptext
-    markdown_field_helptext = "Add basic formatting using "
-    markdown_link = "https://www.markdownguide.org/cheat-sheet/"
-    markdown_link_text = "Markdown (cheat sheet)"
-    markdown_field_post_helptext = "A live preview of formatted content \
-        is shown next to the input field"
-
     # Helptext
     include_article_helptext = "Include this article if many conditions \
         lead to the same endpoint (i.e. malignant hyperthermia)"
@@ -262,9 +270,9 @@ class Interaction(models.Model):
     description = MarkdownxField(
         blank=True,
         null=True,
+        verbose_name='Article body - not displayed by default',
         help_text=format_html(
-            '{}<a href="{}" target="_blank" \
-                rel="noopener noreferrer">{}</a><br>{}',
+            '{}<a href="{}" target="_blank" rel="noopener noreferrer">{}</a><br>{}',
             markdown_field_helptext,
             markdown_link,
             markdown_link_text,
@@ -278,10 +286,10 @@ class Interaction(models.Model):
         Source,
         related_name='interaction_sources',
         blank=True)
-    include_article = models.BooleanField(
+    include_article = models.BooleanField(   # False excludes from search
         default=False,
         verbose_name='Include this article on the website?',
-        help_text=include_article_helptext)  # False excludes from search
+        help_text=include_article_helptext)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
