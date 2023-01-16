@@ -28,11 +28,21 @@
 {% for review in reviews %}
 <div class="review{% if not forloop.first %} hide{%endif%}" id="review-{{review.id}}">
     <div class="card">
-            <h5 class="card-header">Article status: {{review.condition.get_peer_review_status_display|lower}}</h5>
+            <h5 class="card-header">{{ review.condition.name }}</h5>
         <div class="card-body">
-            <h5 class="card-title">{{ review.condition.name }} - Peer review</h5>
-            <p class="card-text">{{ review.comment_markdown|safe }}</p>
+            <h5 class="card-title">Article status: {{review.condition.get_peer_review_status_display|lower}}</h5>
+            <p>
+                <span class="card-text">Author: {{ review.condition.created_by|capfirst }}<br></span>
+                <span class="card-text">Last modified by: {{ review.condition.last_edited_by|capfirst }}<br></span>
+            </p>
+            <p class="text-muted small">{{ review.date_created }}</p>
             <a href="{{review.get_absolute_url}}?session_id={{session.id}}" class="btn btn-outline-primary">Join Real-Time Discussion</a>
+            {% if review.comment %}
+            <hr>
+            <h5 class="card-title">Review notes:</h5>
+            <p class="card-text">{{ review.comment_markdown|safe }}</p>
+            {% endif %}
+            
         </div>
     </div>
 </div>
