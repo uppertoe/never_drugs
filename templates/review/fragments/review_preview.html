@@ -16,9 +16,9 @@
 {% endif %}
 {% for review in review_list.all %}
 <div class="card mb-2">
-    <h5 class="card-header">Article status: {{ review.condition.get_peer_review_status_display|lower }}</h5>
+    <h5 class="card-header">{{ review.condition.name | capfirst}}</h5>
     <div class="card-body">
-        <h5 class="card-title">{{ review.condition.name | capfirst}}</h5>
+        <h5 class="card-title">Article status: {{ review.condition.get_peer_review_status_display|lower }}</h5>
         <p>
             <span class="card-text">Author: {{ review.condition.created_by|capfirst }}<br></span>
             <span class="card-text">Last modified by: {{ review.condition.last_edited_by|capfirst }}<br></span>
