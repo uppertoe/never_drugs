@@ -94,9 +94,10 @@ class SessionDetailView(LoginRequiredMixin, DetailView):
         return context
 
     def get_object(self):
-        # Associates the current user with the Review.user_list
+        # Associates the current user with the ReviewSession.user_list
         obj = super().get_object()
-        obj.user_list.add(self.request.user)
+        if obj.open:
+            obj.user_list.add(self.request.user)
         return obj
 
 
