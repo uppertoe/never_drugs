@@ -2,4 +2,5 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    pass
+    class Meta:
+        permissions = (("access_peer_review", "Can access the peer review module"),)

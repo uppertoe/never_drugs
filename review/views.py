@@ -8,35 +8,38 @@ from django.http import HttpResponseBadRequest, JsonResponse, Http404
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .models import Review, ReviewSession
 from .forms import InteractionForReviewForm, ConditionPeerReviewStatusForm
 
 
-class SessionCreateView(LoginRequiredMixin, CreateView):
+class SessionCreateView(PermissionRequiredMixin, CreateView):
     model = ReviewSession
     form_class = InteractionForReviewForm
     template_name = 'review/session_create.html'
+    permission_required = 'accounts.access_peer_review'
 
     def get_success_url(self):
         return reverse_lazy('session_detail', kwargs={'pk': self.object.id})
 
 
-class SessionListView(LoginRequiredMixin, ListView):
+class SessionListView(PermissionRequiredMixin, ListView):
     model = ReviewSession
     context_object_name = 'session_list'
     template_name = 'review/session_list.html'
+    permission_required = 'accounts.access_peer_review'
     queryset = (
         ReviewSession.objects.all()
         .order_by('-date_created')
         .prefetch_related('reviews', 'user_list', 'host'))
 
 
-class SessionLatestView(LoginRequiredMixin, RedirectView):
+class SessionLatestView(PermissionRequiredMixin, RedirectView):
     # Redirect to the last created ReviewSession
     permanent = False
     query_string = False
+    permission_required = 'accounts.access_peer_review'
 
     def get_redirect_url(self, *args, **kwargs):
         session = ReviewSession.objects.all().order_by('-date_created').first()
@@ -50,7 +53,7 @@ def ajax_review_detail_view(request):
     if not request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         return HttpResponseBadRequest('Bad Request')
 
-    if not request.user.is_authenticated:
+    if not request.user.has_perm('accounts.access_peer_review'):
         return JsonResponse({'status': 'Forbidden'}, status=401)
 
     if not request.method == 'GET':
@@ -76,7 +79,7 @@ def ajax_review_detail_view(request):
     return JsonResponse({'html': html})
 
 
-class SessionDetailView(LoginRequiredMixin, DetailView):
+class SessionDetailView(PermissionRequiredMixin, DetailView):
     '''
     Displays the Session from which users can select Reviews
     '''
@@ -84,6 +87,7 @@ class SessionDetailView(LoginRequiredMixin, DetailView):
     model = ReviewSession
     context_object_name = 'session'
     template_name = 'review/session_detail.html'
+    permission_required = 'accounts.access_peer_review'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -101,26 +105,29 @@ class SessionDetailView(LoginRequiredMixin, DetailView):
         return obj
 
 
-class SessionEditView(LoginRequiredMixin, UpdateView):
+class SessionEditView(PermissionRequiredMixin, UpdateView):
     model = ReviewSession
     context_object_name = 'session'
     template_name = 'review/session_edit.html'
     fields = ['reviews', 'open', 'host', 'user_list']
+    permission_required = 'accounts.access_peer_review'
 
 
-class ReviewListView(LoginRequiredMixin, ListView):
+class ReviewListView(PermissionRequiredMixin, ListView):
     model = Review
     context_object_name = 'review_list'
     template_name = 'review/review_list.html'
+    permission_required = 'accounts.access_peer_review'
 
 
-class ReviewDetailView(LoginRequiredMixin, DetailView):
+class ReviewDetailView(PermissionRequiredMixin, DetailView):
     # Call get_form() in get_context_data to provide initial values
     # form.save() is handled in ajax_save_review_session()
     model = Review
     context_object_name = 'review'
     current_session_id = None
     form_class = ConditionPeerReviewStatusForm
+    permission_required = 'accounts.access_peer_review'
 
     def get(self, request, *args, **kwargs):
         # Check whether a valid UUID was passed
@@ -181,7 +188,7 @@ def ajax_save_review_session(request):
     if not request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         return HttpResponseBadRequest('Bad Request')
 
-    if not request.user.is_authenticated:
+    if not request.user.has_perm('accounts.access_peer_review'):
         return JsonResponse({'status': 'Forbidden'}, status=401)
 
     if request.method == 'POST':
@@ -237,7 +244,7 @@ def ajax_revert_review(request):
     if not request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         return HttpResponseBadRequest('Bad Request')
 
-    if not request.user.is_authenticated:
+    if not request.user.has_perm('accounts.access_peer_review'):
         return JsonResponse({'status': 'Forbidden'}, status=401)
 
     if request.method == 'POST':
@@ -292,7 +299,7 @@ def ajax_auto_update_review(request):
     if not request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         return HttpResponseBadRequest('Bad Request')
 
-    if not request.user.is_authenticated:
+    if not request.user.has_perm('accounts.access_peer_review'):
         return JsonResponse({'status': 'Forbidden'}, status=401)
 
     if request.method == 'GET':
