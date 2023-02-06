@@ -9,7 +9,7 @@
 {% block description %}Look up conditions and anaesthetic drugs{% endblock description %}
 {% block item_loop %}
 <div>
-    <form action="{% url 'search' %}" method='get' class='d-flex'>
+    <form action="{% url 'search' %}" method='get' class='d-flex' id='search-form'>
         <div class="input-group mb-3 col pt-md-4">
             <input autofocus type="search" class="form-control" name='q' id='autocompleteInput'
                 placeholder="{% if request.GET.q %}{{ request.GET.q }}{% else %}Condition or drug{% endif %}">

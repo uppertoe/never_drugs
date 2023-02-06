@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils.html import escape
 from itertools import chain
@@ -90,6 +90,19 @@ def search_view(request):
                 'secondary_conditions',
                 'drugs',
                 'secondary_drugs'))
+
+        # redirect straight to page if only 1 result
+        drug_count = drugs.count()
+        condition_count = conditions.count()
+        interaction_count = interactions.count()
+        if drug_count + condition_count + interaction_count == 1:
+            if drug_count:
+                return redirect(drugs.get())
+            if condition_count:
+                return redirect(conditions.get())
+            if interaction_count:
+                return redirect(interactions.get())
+
         form = TicketForm(initial={'name': query})
         context = {
             # combine querysets from both models
