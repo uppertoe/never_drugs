@@ -35,6 +35,8 @@ function autocomplete(inp, arr) {
           /*close the list of autocompleted values,
           (or any other open lists of autocompleted values:*/
           closeAllLists();
+          form = document.getElementById('search-form');
+          form.submit();
         });
         a.appendChild(b);
       }
