@@ -20,6 +20,11 @@ class ConditionListView(ListView):
     context_object_name = 'condition_list'
     template_name = 'reactions/condition_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['condition_list'] = self.model.objects.exclude(ready_to_publish=False)
+        return context
+
 
 class DrugDetailView(DetailView):
     model = Drug
