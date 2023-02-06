@@ -1,3 +1,4 @@
+let form = document.getElementById('search-form');
 function autocomplete(inp, arr) {
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
@@ -35,7 +36,6 @@ function autocomplete(inp, arr) {
           /*close the list of autocompleted values,
           (or any other open lists of autocompleted values:*/
           closeAllLists();
-          form = document.getElementById('search-form');
           form.submit();
         });
         a.appendChild(b);
@@ -66,7 +66,6 @@ function autocomplete(inp, arr) {
         if (x) {
           x[currentFocus].click();
           currentFocus = -1;
-          form = document.getElementById('search-form');
           form.submit();
         }
       }
