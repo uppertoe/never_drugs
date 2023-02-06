@@ -101,7 +101,7 @@ def search_view(request):
     return render(request, 'reactions/search.html', context)
 
 
-def escape_model_fields(model, sep, *args):
+def escape_model_fields(queryset, sep, *args):
     '''
     Takes a model, separator and fields to return as a list of escaped strings
 
@@ -113,7 +113,7 @@ def escape_model_fields(model, sep, *args):
     output = []
     # Converts values_list tuple into list with empty strings removed
     for field_strings in list(filter(None, chain(
-            *model.objects.values_list(*args)))):
+            *queryset.values_list(*args)))):
         # Splits on user-entered separators in model.field
         for split_string in field_strings.split(sep):
             output.append(escape(split_string))
@@ -127,22 +127,24 @@ def list_contents_view(request):
     if is_ajax:
         if request.method == 'GET':
             drugs = escape_model_fields(
-                Drug,
+                Drug.objects.all(),
                 ', ',
                 'name',
                 'aliases')
             conditions = escape_model_fields(
-                Condition,
+                Condition.objects.filter(ready_to_publish=True),
                 ', ',
                 'name',
                 'aliases')
-            interactions = escape_model_fields(  
+            interactions = escape_model_fields(
                 # TODO: exclude include_article == False
-                Interaction,
+                Interaction.objects.filter(include_article=True),
                 ', ',
                 'name'
             )
-            return JsonResponse({'context': drugs + conditions + interactions})
+            # Remove duplicates
+            context = list(set(drugs+conditions+interactions))
+            return JsonResponse({'context': context})
         return JsonResponse({'status': 'Bad Request'}, status=400)
     else:
         return HttpResponseBadRequest('Bad Request')
