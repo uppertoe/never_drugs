@@ -211,6 +211,18 @@ class Condition(models.Model):
     class Meta:
         ordering = ['name']
 
+    def alias_list(self):
+        return [self.aliases.split(', ')] + [self.name]
+
+    def alias_dict(self):
+        dict = {}
+        queryset = Condition.objects.all().exclude(ready_to_publish=False)
+        for condition in queryset:
+            for alias in condition.alias_list:
+                if alias not in dict:
+                    dict[alias] = condition
+        return dict
+
     def description_markdown(self):
         # Replace NoneType with '' if empty
         return markdownify(self.description) if self.description else ''
@@ -304,6 +316,22 @@ class Interaction(models.Model):
         blank=True,
         null=True,
         related_name='interaction_edited_by')
+
+    def alias_list(self):
+        return [self.aliases.split(', ')] + [self.name]
+
+    def alias_dict(self, queryset):
+        dict = {}
+        for item in queryset:
+            if queryset.model is (Condition | Interaction):
+                for alias in item.alias_list:
+                    if alias not in dict:
+                        dict[alias] = item
+                    else:
+                        dict.pop(alias)
+            else:  # Assume item is a Drug
+                dict[item.name] = item
+        return dict
 
     def description_markdown(self):
         # Replace NoneType with '' if empty
