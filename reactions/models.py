@@ -225,7 +225,6 @@ class Condition(models.Model):
                 dict[name] = item
             else:
                 dict.pop(name)  # dict should be free of duplicates
-                print('popped!')
 
         for item in queryset:
             for alias in item.alias_list():
