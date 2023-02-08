@@ -117,6 +117,9 @@ class Drug(models.Model):
         return ', '.join(
             [drug_class.name for drug_class in self.drug_class.all()])
 
+    def alias_list(self):
+        return [self.aliases.split(', ')] + [self.name]
+
     def get_absolute_url(self):
         return reverse('drug_detail', kwargs={'slug': self.slug})
 
@@ -214,13 +217,21 @@ class Condition(models.Model):
     def alias_list(self):
         return [self.aliases.split(', ')] + [self.name]
 
-    def alias_dict(self):
+    def alias_dict(queryset):
         dict = {}
-        queryset = Condition.objects.all().exclude(ready_to_publish=False)
-        for condition in queryset:
-            for alias in condition.alias_list:
-                if alias not in dict:
-                    dict[alias] = condition
+
+        def insert_non_duplicates(name, item):
+            if name not in dict:
+                dict[name] = item
+            else:
+                dict.pop(name)  # dict should be free of duplicates
+
+        for item in queryset:
+            if item is (Condition | Interaction | Drug):
+                for alias in item.alias_list:
+                    insert_non_duplicates(alias.lower(), item)
+            else:  # Assume item has no alias_list
+                insert_non_duplicates(item.name.lower(), item)
         return dict
 
     def description_markdown(self):
@@ -319,19 +330,6 @@ class Interaction(models.Model):
 
     def alias_list(self):
         return [self.aliases.split(', ')] + [self.name]
-
-    def alias_dict(self, queryset):
-        dict = {}
-        for item in queryset:
-            if queryset.model is (Condition | Interaction):
-                for alias in item.alias_list:
-                    if alias not in dict:
-                        dict[alias] = item
-                    else:
-                        dict.pop(alias)
-            else:  # Assume item is a Drug
-                dict[item.name] = item
-        return dict
 
     def description_markdown(self):
         # Replace NoneType with '' if empty

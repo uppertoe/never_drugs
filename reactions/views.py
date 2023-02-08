@@ -77,6 +77,17 @@ def search_view(request):
     query = request.GET.get('q')
     context = {}
     if query:
+        # Redirect straight to the absolute_url if exact match for query
+        exact_queries = chain(
+            Drug.objects.all(),
+            Condition.objects.all().exclude(ready_to_publish=False),
+            Interaction.objects.all().exclude(include_article=False))
+        alias_dict = Condition.alias_dict(exact_queries)
+        exact_match = alias_dict.get(query.lower())
+        if exact_match:
+            return redirect(exact_match)
+        
+        # Otherwise show the search results page
         drugs = (
             Drug.objects
             .filter(Q(name__icontains=query) | Q(aliases__icontains=query))
@@ -95,18 +106,6 @@ def search_view(request):
                 'secondary_conditions',
                 'drugs',
                 'secondary_drugs'))
-
-        # redirect straight to page if only 1 result
-        drug_count = drugs.count()
-        condition_count = conditions.count()
-        interaction_count = interactions.count()
-        if drug_count + condition_count + interaction_count == 1:
-            if drug_count:
-                return redirect(drugs.get())
-            if condition_count:
-                return redirect(conditions.get())
-            if interaction_count:
-                return redirect(interactions.get())
 
         form = TicketForm(initial={'name': query})
         context = {
