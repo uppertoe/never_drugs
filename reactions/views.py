@@ -86,7 +86,7 @@ def search_view(request):
         exact_match = alias_dict.get(query.lower())
         if exact_match:
             return redirect(exact_match)
-        
+
         # Otherwise show the search results page
         drugs = (
             Drug.objects

@@ -118,7 +118,7 @@ class Drug(models.Model):
             [drug_class.name for drug_class in self.drug_class.all()])
 
     def alias_list(self):
-        return [self.aliases.split(', ')] + [self.name]
+        return self.aliases.split(', ') + [self.name] if self.aliases else [self.name]
 
     def get_absolute_url(self):
         return reverse('drug_detail', kwargs={'slug': self.slug})
@@ -215,7 +215,7 @@ class Condition(models.Model):
         ordering = ['name']
 
     def alias_list(self):
-        return [self.aliases.split(', ')] + [self.name]
+        return self.aliases.split(', ') + [self.name] if self.aliases else [self.name]
 
     def alias_dict(queryset):
         dict = {}
@@ -225,13 +225,11 @@ class Condition(models.Model):
                 dict[name] = item
             else:
                 dict.pop(name)  # dict should be free of duplicates
+                print('popped!')
 
         for item in queryset:
-            if item is (Condition | Interaction | Drug):
-                for alias in item.alias_list:
-                    insert_non_duplicates(alias.lower(), item)
-            else:  # Assume item has no alias_list
-                insert_non_duplicates(item.name.lower(), item)
+            for alias in item.alias_list():
+                insert_non_duplicates(alias.lower(), item)
         return dict
 
     def description_markdown(self):
@@ -329,7 +327,7 @@ class Interaction(models.Model):
         related_name='interaction_edited_by')
 
     def alias_list(self):
-        return [self.aliases.split(', ')] + [self.name]
+        return [self.name]  # Retain combatibility with Condition.alias_dict()
 
     def description_markdown(self):
         # Replace NoneType with '' if empty
