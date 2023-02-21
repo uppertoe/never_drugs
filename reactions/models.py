@@ -156,6 +156,20 @@ class Condition(models.Model):
         (L6, 'Single qualitative study'),
         (L7, 'Expert body opinion'), ]
 
+    default_description = (
+        '# Overview\n'
+        '---\n'
+        'Overview text here\n\n'
+        '# Pathophysiology\n'
+        '---\n'
+        'Pathophysiology text here\n\n'
+        '# Impacts on anaesthesia\n'
+        '---\n'
+        'Impacts text here \n\n'
+        '### *Drug name here*\n'
+        '`Expert opinion` Further detail here'
+    )
+    
     name = models.CharField(
         max_length=255,
         unique=True)
@@ -170,6 +184,7 @@ class Condition(models.Model):
     description = MarkdownxField(
         blank=True,
         null=True,
+        default=default_description,
         verbose_name='Article body',
         help_text=format_html(
             '{}<a href="{}" target="_blank" rel="noopener noreferrer">{}</a><br>{}',
