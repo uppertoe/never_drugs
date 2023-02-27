@@ -133,7 +133,7 @@ def escape_model_fields(queryset, sep, *args):
             *queryset.values_list(*args)))):
         # Splits on user-entered separators in model.field
         for split_string in field_strings.split(sep):
-            output.append(escape(split_string))
+            output.append(escape(split_string).capitalize())
     return output
 
 
