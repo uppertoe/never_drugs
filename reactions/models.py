@@ -167,9 +167,8 @@ class Condition(models.Model):
         '---\n'
         'Impacts text here \n\n'
         '### *Drug name here*\n'
-        '`Expert opinion` Further detail here'
-    )
-    
+        '`Expert opinion` Further detail here')
+
     name = models.CharField(
         max_length=255,
         unique=True)

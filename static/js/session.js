@@ -32,7 +32,7 @@ review_link.forEach(item => {
             .then((response) => response.json())
             .then((data) => {
                 if (data.html) {
-                    const html = decodeURIComponent(data.html);
+                    const html = data.html;
                     display_pane.innerHTML = html;
                 } else {
                     const status = data.status;
