@@ -26,7 +26,7 @@
 
 {% block article_body %}
 {% if condition.tldr %}
-<div class="alert {{condition.get_tldr_box_colour}}">
+<div class="alert {{condition.get_tldr_box_colour}} p-3 p-md-5">
     <h3>TL;DR...</h3>
     {{ condition.tldr_markdown|safe }}
 </div>
