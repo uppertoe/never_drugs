@@ -156,6 +156,19 @@ class Condition(models.Model):
         (L6, 'Single qualitative study'),
         (L7, 'Expert body opinion'), ]
 
+    # TL;DR box choices
+    GREY = 'GY'
+    BLUE = 'BL'
+    YELLOW = 'YE'
+    GREEN = 'GN'
+    RED = 'RE'
+    tldr_box_choices = [
+        (GREY, 'Grey'),
+        (BLUE, 'Blue'),
+        (YELLOW, 'Yellow'),
+        (GREEN, 'Green'),
+        (RED, 'Red')]
+
     default_description = (
         '# Overview\n'
         '---\n'
@@ -180,6 +193,18 @@ class Condition(models.Model):
         null=False,
         unique=True,
         verbose_name='URL title')
+    tldr = MarkdownxField(
+        blank=True,
+        null=True,
+        verbose_name='TL;DR',
+        help_text=(
+            'A brief description of the important anaesthetic concern '
+            'to appear at the top of the article'))
+    tldr_box = models.CharField(
+        max_length=2,
+        choices=tldr_box_choices,
+        default=RED,
+        verbose_name='TL;DR banner colour')
     description = MarkdownxField(
         blank=True,
         null=True,
@@ -190,8 +215,7 @@ class Condition(models.Model):
             markdown_field_helptext,
             markdown_link,
             markdown_link_text,
-            markdown_field_post_helptext)
-    )
+            markdown_field_post_helptext))
     sources = models.ManyToManyField(
         Source,
         related_name='condition_sources',
@@ -248,6 +272,20 @@ class Condition(models.Model):
     def description_markdown(self):
         # Replace NoneType with '' if empty
         return markdownify(self.description) if self.description else ''
+
+    def tldr_markdown(self):
+        # Replace NoneType with '' if empty
+        return markdownify(self.tldr) if self.description else ''
+
+    def get_tldr_box_colour(self):
+        # chooses bootstrap alert colour based on interaction.severity
+        alert_dict = {
+            'GY': 'alert-secondary',
+            'BL': 'alert-primary',
+            'YE': 'alert-warning',
+            'GN': 'alert-success',
+            'RE': 'alert-danger'}
+        return alert_dict.get(self.tldr_box)
 
     def get_absolute_url(self):
         return reverse('condition_detail', kwargs={'slug': self.slug})
