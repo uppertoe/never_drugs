@@ -1,9 +1,10 @@
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from markdownx.widgets import MarkdownxWidget
 
 from tickets.models import Ticket
-from .models import Interaction
+from .models import Interaction, Condition, Drug
 
 
 class TicketForm(ModelForm):
@@ -12,11 +13,23 @@ class TicketForm(ModelForm):
         fields = 'name', 'description'
 
 
+class DrugAdminForm(ModelForm):
+    class Meta:
+        model = Drug
+        exclude = ()
+        widgets = {
+            'description': MarkdownxWidget(attrs={'rows': 20, 'cols': 120})
+        }
+
+
 class InteractionAdminForm(ModelForm):
     '''Implement validation for the InteractionAdmin'''
-    class Meta():
+    class Meta:
         model = Interaction
         exclude = ()
+        widgets = {
+            'description': MarkdownxWidget(attrs={'rows': 40, 'cols': 120})
+        }
 
     def clean(self):
         data = self.cleaned_data
@@ -43,3 +56,12 @@ class InteractionAdminForm(ModelForm):
         if errors:
             raise ValidationError(errors)
         return data
+
+
+class ConditionAdminForm(ModelForm):
+    class Meta:
+        model = Condition
+        fields = '__all__'
+        widgets = {
+            'description': MarkdownxWidget(attrs={'rows': 40, 'cols': 120})
+        }

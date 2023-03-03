@@ -93,6 +93,14 @@ class Drug(models.Model):
         DrugClass,
         blank=True,
         related_name='drugs')
+    description = MarkdownxField(
+        blank=True,
+        null=True,
+        verbose_name='Description',
+        help_text=(
+            'Use this field to outline the '
+            'drug\'s background and contraindications')
+    )
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -205,6 +213,12 @@ class Condition(models.Model):
         choices=tldr_box_choices,
         default=RED,
         verbose_name='TL;DR banner colour')
+    see_also = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        blank=True,
+        verbose_name='See also',
+        help_text='Link to related conditions here <br>')
     description = MarkdownxField(
         blank=True,
         null=True,

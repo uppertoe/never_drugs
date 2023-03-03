@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import DrugClass, Drug, Condition, Interaction, Source
-from .forms import InteractionAdminForm
+from .forms import InteractionAdminForm, ConditionAdminForm, DrugAdminForm
 
 
 class SaveAuthorMixin:
@@ -30,6 +30,7 @@ class DrugClassAdmin(SaveAuthorMixin, admin.ModelAdmin):
 
 
 class DrugAdmin(SaveAuthorMixin, admin.ModelAdmin):
+    form = DrugAdminForm
     list_display = ('name', 'aliases', 'get_drug_classes')
     list_filter = ('created_by', 'last_edited_by')
     prepopulated_fields = {'slug': ('name',)}
@@ -61,6 +62,9 @@ class InteractionAdmin(SaveAuthorMixin, admin.ModelAdmin):
     search_fields = ('name',)
     readonly_fields = ('created_by', 'last_edited_by')
 
+    # Customise widget attrs for Condition.description
+    form = InteractionAdminForm
+
     def get_queryset(self, request):  # Prefetch many-many query
         qs = super().get_queryset(request)
         return qs.prefetch_related(
@@ -79,10 +83,13 @@ class ConditionAdmin(SaveAuthorMixin, admin.ModelAdmin):
         'ready_for_peer_review')
     list_editable = ('ready_to_publish', 'ready_for_peer_review')
     list_filter = ('created_by', 'last_edited_by')
-    filter_horizontal = ('sources',)
+    filter_horizontal = ('sources', 'see_also')
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name', 'aliases')
     readonly_fields = ('created_by', 'last_edited_by', 'peer_review_status')
+
+    # Customise widget attrs for Condition.description
+    form = ConditionAdminForm
 
 
 admin.site.register(DrugClass, DrugClassAdmin)
