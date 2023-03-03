@@ -31,6 +31,14 @@
     {{ condition.tldr_markdown|safe }}
 </div>
 {% endif %}
+{% if condition.see_also.all %}
+<div class="alert alert-dark p-3 p-md-5">
+<h3>Similar conditions:</h3>
+{% for condition in condition.see_also.all %}
+<h6><a href="{{condition.get_absolute_url}}" class="text-decoration-none">{{condition.name}}</a></h6>
+{% endfor %}
+</div>
+{% endif %}
 <div class="card">
     <div class="card-body p-3 p-md-5">
         {{ condition.description_markdown|safe }}
