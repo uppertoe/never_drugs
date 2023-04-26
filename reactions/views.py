@@ -33,16 +33,8 @@ class DrugDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Include related interactions via
-        # interactions.drugs related_name
-        context['interactions'] = (
-            self.object.interactions.all()
-            .prefetch_related('conditions', 'secondary_conditions'))
-        # Include related interactions via
-        # interactions.secondary_drugs related_name
-        context['secondary_interactions'] = (
-            self.object.secondary_drug_interactions.all()
-            .prefetch_related('conditions', 'secondary_conditions'))
+        # Chains drugs and secondary drugs
+        context['interactions'] = self.object.get_all_interactions()
         return context
 
 

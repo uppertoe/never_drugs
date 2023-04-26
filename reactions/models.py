@@ -127,6 +127,15 @@ class Drug(models.Model):
         return ', '.join(
             [drug_class.name for drug_class in self.drug_class.all()])
 
+    def get_all_interactions(self):
+        return self.interactions.all() | self.secondary_drug_interactions.all()
+
+    def get_condition_count(self):
+        result = 0
+        for interaction in self.get_all_interactions():
+            result += interaction.get_all_conditions().count()
+        return result
+
     def alias_list(self):
         return self.aliases.split(', ') + [self.name] if self.aliases else [self.name]
 
@@ -291,7 +300,7 @@ class Condition(models.Model):
 
     def tldr_markdown(self):
         # Replace NoneType with '' if empty
-        return markdownify(self.tldr) if self.description else ''
+        return markdownify(self.tldr) if self.tldr else ''
 
     def get_tldr_box_colour(self):
         # chooses bootstrap alert colour based on interaction.severity
@@ -301,7 +310,7 @@ class Condition(models.Model):
             'YE': 'alert-warning',
             'GN': 'alert-success',
             'RE': 'alert-danger'}
-        return alert_dict.get(self.tldr_box)
+        return alert_dict.get(self.tldr_box) if self.tldr else ''
 
     def get_absolute_url(self):
         return reverse('condition_detail', kwargs={'slug': self.slug})
@@ -399,6 +408,12 @@ class Interaction(models.Model):
     def description_markdown(self):
         # Replace NoneType with '' if empty
         return markdownify(self.description) if self.description else ''
+
+    def get_all_conditions(self):
+        return self.conditions.all() | self.secondary_conditions.all()
+
+    def get_all_drugs(self):
+        return self.drugs.all() | self.secondary_drugs.all()
 
     def get_bootstrap_alert_colour(self):
         # chooses bootstrap alert colour based on interaction.severity
