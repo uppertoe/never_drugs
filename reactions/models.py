@@ -101,6 +101,8 @@ class Drug(models.Model):
             'Use this field to outline the '
             'drug\'s background and contraindications')
     )
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

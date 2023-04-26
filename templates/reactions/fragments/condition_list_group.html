@@ -1,0 +1,56 @@
+{% load static %}
+
+{% if interaction.include_article %}
+<a href={{interaction.get_absolute_url}} class="list-group-item list-group-item-action list-group-item-{{alert|default:"primary"}} d-flex gap-3 py-3" aria-current="true">
+    <img src="{% static 'images/link-45deg.svg' %}" alt="link" width="32" height="32" class=" flex-shrink-0">
+        <div>
+            <h6 class="alert-heading mb-0">{{interaction.name | capfirst}}</h6>
+            <small class="opacity-50 text-nowrap">{{condition.date_modified}}</small>
+            <hr>
+            <div class="row">
+                {% if interaction.conditions.all %}
+                <div class="col">
+                    <p class="mb-0">Implicated conditions:</p>
+                    {% for condition in interaction.conditions.all %}
+                    <p class="mb-0 opacity-75">{{condition.name | capfirst}}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if interaction.secondary_conditions.all %}
+                <div class="col">
+                    <p class="mb-0">Potentially implicated conditions:</p>
+                    {% for secondary_condition in interaction.secondary_conditions.all %}
+                    <p class="mb-0 opacity-75">{{secondary_condition.name|capfirst}}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+</a>
+{% else %}
+<div class="list-group-item list-group-item-{{alert|default:"primary"}} py-3" aria-current="true">
+        <div>
+            <h6 class="alert-heading">{{interaction.name | capfirst}}</h6>
+            <hr>
+            <div class="row">
+                {% if interaction.conditions.all %}
+                <div class="col">
+                    <p class="mb-0">Implicated conditions:</p>
+                    {% for condition in interaction.conditions.all %}
+                    <p class="mb-0 opacity-75">{{condition.name | capfirst}}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if interaction.secondary_conditions.all %}
+                <div class="col">
+                    <p class="mb-0">Potentially implicated conditions:</p>
+                    {% for secondary_condition in interaction.secondary_conditions.all %}
+                    <p class="mb-0 opacity-75">{{secondary_condition.name|capfirst}}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+</div>
+{% endif %}

@@ -1,0 +1,58 @@
+{% extends 'reactions/_item_list.html' %}
+{% load static %}
+
+{% block heading %}{{ drug.name | capfirst }}{% endblock heading %}
+
+{% block subheading %}
+{% if drug.aliases %}
+<small class="text-muted">Also known as: {{ drug.aliases }}</small>
+{% endif %}
+{% if drug.get_class_string %}
+<p class="col-lg-10 fs-4">Drug class: {{ drug.get_drug_class_string }}</p>
+{% endif %}
+{% endblock subheading %}
+
+{% block item_loop %}
+{% if interactions %}
+<h6 class="text-muted">Contraindicated in:</h6>
+<div class="list-group pb-2">
+    {% for interaction in interactions %}
+    <a href="{{interaction.get_absolute_url}}"
+        class="list-group-item list-group-item-action list-group-item-primary d-flex gap-3 py-3" aria-current="true">
+        <img src="{% static 'images/clipboard2-pulse-fill.svg'%}" alt="prescription" width="32" height="32"
+            class=" flex-shrink-0">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
+                {% for condition in interaction.conditions.all %}
+                <p class="mb-0 opacity-75">{{condition.name | capfirst}}</p>
+                {% endfor %}
+                <small class="opacity-50 text-nowrap">{{interaction.date_modified}}</small>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+{% if secondary_interactions %}
+<h6 class="text-muted">Use with caution in:</h6>
+<div class="list-group">
+    {% for interaction in secondary_interactions %}
+    <a href="{{interaction.get_absolute_url}}"
+        class="list-group-item list-group-item-action list-group-item-secondary d-flex gap-3 py-3" aria-current="true">
+        <img src="{% static 'images/clipboard2-pulse-fill.svg'%}" alt="prescription" width="32" height="32"
+            class=" flex-shrink-0">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h6 class="mb-0">{{interaction.name | capfirst}}</h6>
+                {% for condition in interaction.conditions.all %}
+                <p class="mb-0 opacity-75">{{condition.name | capfirst}}</p>
+                {% endfor %}
+                <small class="opacity-50 text-nowrap">{{interaction.date_modified}}</small>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock item_loop %}

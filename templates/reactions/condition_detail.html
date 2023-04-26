@@ -3,7 +3,7 @@
 
 {% block article_name %}{{condition.name|capfirst}}{% endblock article_name %}
 {% block article_aliases %}{% if condition.aliases %}Also known as: {{condition.aliases}}<br>{% endif %}{% endblock article_aliases %}
-{% block article_modified %}Last modified: {{condition.date_modified}}{% endblock article_modified %}
+{% block article_modified %}Last modified: {{condition.date_modified|date:'jS F Y'}}{% endblock article_modified %}
 
 {% block item_loop %}
 {% if interactions %}
