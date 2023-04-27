@@ -132,8 +132,8 @@ class Drug(models.Model):
         return self.interactions.all() | self.secondary_drug_interactions.all()
 
     def get_all_conditions(self):
-        return Condition.objects.filter(
-            Q(interactions__drugs=self) | Q(secondary_condition_interactions__drugs=self) | Q(interactions__secondary_drugs=self) | Q(secondary_condition_interactions__secondary_drugs=self)
+        return (Condition.objects.filter(
+            Q(interactions__drugs=self) | Q(secondary_condition_interactions__drugs=self) | Q(interactions__secondary_drugs=self) | Q(secondary_condition_interactions__secondary_drugs=self))
             .distinct())
 
     def get_condition_count(self):
