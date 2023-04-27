@@ -6,17 +6,13 @@
 {% block article_modified %}Last modified: {{drug.date_modified|date:'jS F Y'}}{% endblock article_modified %}
 
 {% block article_body %}
-{% for interaction in interactions %}
-interaction
-    {% for condition in interaction.get_all_conditions %}
-    condition
-    <div class="alert {{condition.get_tldr_box_colour|default:"alert-primary"}}" role="alert">
-        <a href="{{ condition.get_absolute_url }}" class="alert-link"><h4 class="alert-heading">{{ condition.name }}</h4></a>
-        {% if condition.tldr %}
-        <hr>
-        <p>{{ condition.tldr_markdown|safe }}</p>
-        {% endif %}
-    </div>
-    {% endfor %}
+{% for condition in conditions %}
+<div class="alert {{condition.get_tldr_box_colour|default:"alert-primary"}}" role="alert">
+    <a href="{{ condition.get_absolute_url }}" class="alert-link"><h4 class="alert-heading">{{ condition.name }}</h4></a>
+    {% if condition.tldr %}
+    <hr>
+    <p>{{ condition.tldr_markdown|safe }}</p>
+    {% endif %}
+</div>
 {% endfor %}
 {% endblock article_body %}

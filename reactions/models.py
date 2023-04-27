@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.contrib import admin
 from django.utils.text import slugify
@@ -130,11 +131,12 @@ class Drug(models.Model):
     def get_all_interactions(self):
         return self.interactions.all() | self.secondary_drug_interactions.all()
 
+    def get_all_conditions(self):
+        return Condition.objects.filter(
+            Q(interactions__drugs=self) | Q(secondary_condition_interactions__drugs=self) | Q(interactions__secondary_drugs=self) | Q(secondary_condition_interactions__secondary_drugs=self))
+
     def get_condition_count(self):
-        result = 0
-        for interaction in self.get_all_interactions():
-            result += interaction.get_all_conditions().count()
-        return result
+        return self.get_all_conditions().count()
 
     def alias_list(self):
         return self.aliases.split(', ') + [self.name] if self.aliases else [self.name]
